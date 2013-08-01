@@ -1,0 +1,225 @@
+{% extends "::base.twig" %}
+{% use "::quiz-description.twig" %}
+{% import _self as macros %}
+
+{% macro score(score, n) %}
+    {% set score100 = (score*100/n)|number_format %}
+    <div class="progress progress-striped">
+        <div class="bar bar-info" rel="tooltip"
+            title="{{ score }} point{% if score|abs > 1%}s{% endif %} sur {{ n }}"
+            style="width: {{ score100 }}%">{{ score100 }} / 100</div>
+    </div>
+{% endmacro %}
+
+{% macro categorization(stats, n) %}
+    {% set categories = [
+        ['right_answers',               'success', 'réponses correctes et complètes'],
+        ['good_but_incomplete_answers', 'info',    'réponses justes mais incomplètes'],
+        ['skipped_questions',           'grey',    'questions affichées mais non répondues'],
+        ['partially_wrong_answers',     'warning', 'réponses partiellement fausses'],
+        ['full_wrong_answers',          'danger',  'réponses complètement fausses'],
+        ['not_displayed_questions',     'black',   'questions non affichées'],
+    ] %}
+    <div class="progress">
+        {% for category in categories %}
+            <div class="bar bar-{{ category[1] }}" rel="tooltip" title="{{ category[2] }}"
+                style="width: {{ (stats[category[0]]*100/n)|number_format }}%">
+                {{ stats[category[0]] }}
+            </div>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{% block content %}
+    {{ parent() }}
+
+    <div class="row-fluid">
+        <div class="span3 bs-docs-sidebar">
+            <ul id="navbar" class="nav nav-list bs-docs-sidenav affix" data-spy="affix" data-offset-top="101"
+              data-offset-bottom="121">
+                <li class="active"><a href="#ddls"><i class="icon-chevron-right"></i> Descriptif de la session</a></li>
+                <li><a href="#rgs"><i class="icon-chevron-right"></i> Résultat global</a></li>
+                <li><a href="#tmdr"><i class="icon-chevron-right"></i> Temps moyen de réponse</a></li>
+                <li><a href="#spt"><i class="icon-chevron-right"></i> Score par thème</a></li>
+                <li><a href="#cdr"><i class="icon-chevron-right"></i> Catégorisation des réponses</a></li>
+            </ul>
+        </div>
+        <div class="span9 qcm" id="ddls">
+            <h4>
+                Descriptif de la session
+                <div class="pull-right"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
+            </h4>
+
+            <div class="quizzes">
+                <h5>{{ quiz_stats.title }}</h5>
+                <blockquote>
+                    <p>{{ block('quiz_description_nb_questions') }},</p>
+                    <p>{{ block('quiz_description_themes') }}.</p>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid" id="rgs">
+        <div class="span9 offset3 qcm">
+            <h4>
+                Résultat global
+                <div class="pull-right"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
+            </h4>
+
+            <h5>Durée de la session</h5>
+            {{ quiz_results.total.total_elasped_time_msg }} pour un temps limite de {{ quiz_results.total.time_limit_msg }}
+            ⇒ {{ (quiz_results.total.total_elasped_time*100/quiz_stats.time_limit)|number_format }} %.
+
+            <h5>Score</h5>
+            <div class="row-fluid">
+                <div class="span12">
+                    {{ macros.score(quiz_results.total.score, quiz_results.total.total_nb_questions) }}
+                </div>
+            </div>
+
+            <h5>Catégorisation des réponses</h5>
+            <div class="row-fluid">
+                <div class="span12">
+                    {{ macros.categorization(
+                        quiz_results.total.answer_types,
+                        quiz_results.total.total_nb_questions
+                    ) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid" id="tmdr">
+        <div class="span9 offset3 qcm">
+            <h4>
+                Temps moyen de réponse par question et par thème
+                <div class="pull-right"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
+            </h4>
+            {% set _min = 999999 %}
+            {% set _max = 0 %}
+            {% for theme, stats in quiz_results.avg_elapsed_time_by_theme %}
+                {% if stats.avg_elapsed_time > _max %}
+                    {% set _max = stats.avg_elapsed_time %}
+                {% endif %}
+                {% if stats.avg_elapsed_time < _min %}
+                    {% set _min = stats.avg_elapsed_time %}
+                {% endif %}
+            {% endfor %}
+            {% if _max == _min %}{% set _max = _min+1 %}{% endif %}
+            {% for theme, stats in quiz_results.avg_elapsed_time_by_theme %}
+                {% set _percent = (20 + 80*(stats.avg_elapsed_time-_min)/(_max-_min))|number_format %}
+                {% if _percent >= 75 %}
+                    {% set _css_bar = 'progress-danger' %}
+                {% elseif _percent >= 50 %}
+                    {% set _css_bar = 'progress-warning' %}
+                {% else %}
+                    {% set _css_bar = 'progress-success' %}
+                {% endif %}
+                <div class="row-fluid">
+                    <div class="span1"><em>{{ theme }}</em></div>
+                    <div class="span11">
+                        <div class="progress progress-warning progress-striped">
+                            <div class="bar" style="width: {{ _percent }}%">
+                                {{ stats.avg_elapsed_time|number_format(1) }} s
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="row-fluid" id="spt">
+        <div class="span9 offset3 qcm">
+            <h4>
+                Score par thème
+                <div class="pull-right"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
+            </h4>
+            <h5>Tout</h5>
+            <div class="row-fluid">
+                <div class="span12">
+                    {{ macros.score(quiz_results.total.score, quiz_results.total.total_nb_questions) }}
+                </div>
+            </div>
+            <h5>Par thème</h5>
+            {% for theme, score in quiz_results.score_by_theme %}
+                <div class="row-fluid">
+                    <div class="span1"><em>{{ theme }}</em></div>
+                    <div class="span11">
+                        {{ macros.score(score, quiz_results.total.questions_by_theme[theme]) }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="row-fluid" id="cdr">
+        <div class="span9 offset3 qcm">
+            <h4>
+                Catégorisation des réponses par thème
+                <div class="pull-right"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
+            </h4>
+            <h5>Tout</h5>
+            <div class="row-fluid">
+                <div class="span12">
+                    {{ macros.categorization(
+                        quiz_results.total.answer_types,
+                        quiz_results.total.total_nb_questions
+                    ) }}
+                </div>
+            </div>
+            <h5>Par thème</h5>
+            {% for theme, stats in quiz_results.answer_types_by_theme %}
+                <div class="row-fluid">
+                    <div class="span1"><em>{{ theme }}</em></div>
+                    <div class="span11">
+                        {{ macros.categorization(stats, quiz_results.total.questions_by_theme[theme]) }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function(){
+            $("[rel=tooltip]").tooltip({placement: 'bottom'});
+
+            $('body').scrollspy();
+
+            // Afin de prendre en compte les clicks sur la navbar
+            // même lorsque tout le contenu de la page est à l'écran :
+            $("#navbar").delegate("a", "click", function() {
+                var self = this;
+                setTimeout(function() {
+                    $("#navbar li").each(function(i, obj) {
+                        if (! $(obj).is($(self).parent()) && $(obj).hasClass("active")) {
+                            $(obj).removeClass("active");
+                        }
+                    });
+                    if (! $(self).parent().hasClass("active")) {
+                        $(self).parent().addClass("active");
+                    }
+                }, 100);
+            });
+
+            // smooth scroll
+            $('#navbar a').click(function() {
+                var href = $.attr(this, 'href');
+                $('html, body').animate({
+                    scrollTop: $(href).offset().top - 10
+                }, 500/*, function() {
+                    window.location.hash = href;
+                }*/);
+                return false;
+            });
+
+            /*$(window).on('hashchange', function() {
+                $('body').scrollspy('refresh');
+            });*/
+        });
+    </script>
+{% endblock %}

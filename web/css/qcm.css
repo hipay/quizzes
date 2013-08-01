@@ -1,0 +1,161 @@
+html, body {
+    height: 100%;
+    position: relative;
+}
+body {
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+#page {
+    min-height: 100%;
+    position: relative;
+}
+div.bootstrap-filestyle label.btn {
+    margin-bottom: 10px;
+}
+div.qcm {
+    margin-bottom: 20px;
+    padding: 19px 29px 29px;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+div.qcm form label {
+    margin-bottom: 10px;
+}
+div.container {
+    min-height: 100%;
+    padding-top: 0px;
+    padding-bottom: 120px;
+}
+header div.container {
+    padding-top: 20px;
+    padding-bottom: 0;
+}
+h1 {
+    margin-bottom: 30px;
+}
+h1 small {
+    font-style: italic;
+}
+h1 img {
+    vertical-align: baseline;
+    margin-right: 40px;
+}
+footer.footer {
+    height: 60px;
+    color: #777;
+    border-top: 1px solid #ccc;
+    background-color: #eaeaea;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 0 10px 0;
+}
+div.qcm pre.prettyprint {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+}
+div.qcm div.choices {
+    margin: 0 0 30px 19px;
+}
+div.qcm > h4 {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0 0 20px 0;
+  font-size: 21px;
+  font-weight: normal;
+  line-height: 40px;
+  color: #333333;
+  border: 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+div.qcm h4 div.pull-right {
+    font-size: 14px;
+}
+div.qcm-sh {
+    background-color: #fff;
+    margin: 10px 0;
+    padding: 9px;
+    border: 1px solid #e1e1e8;
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+            border-radius: 4px;
+}
+div.qcm-sh div.syntaxhighlighter {
+    margin: 0!important;
+}
+div.qcm div.well code {
+    background-color: #fff;
+}
+div.qcm div.quizzes h5 {
+    display: inline;
+    font-size: 16px;
+    color: #C72B24;
+    font-weight: normal;
+}
+div.qcm div.quizzes blockquote {
+    margin: 6px 0 20px 0;
+}
+div.qcm div.quizzes blockquote p {
+    font-size: 14px;
+}
+div.qcm div.quizzes blockquote small, div.qcm > ul > li small {
+    display: inline;
+    color: #999999;
+}
+div.qcm div.quizzes blockquote small:before {
+    content: '';
+}
+div.qcm div.row-fluid div.progress {
+    margin-bottom: 2px;
+}
+div.qcm div.row-fluid [class*="span"] {
+    min-height: 1px;
+}
+.progress .bar-grey {
+  background-color: #5eb95e;
+  background-image: -moz-linear-gradient(top, #ddd, #bbb);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ddd), to(#bbb));
+  background-image: -webkit-linear-gradient(top, #ddd, #bbb);
+  background-image: -o-linear-gradient(top, #ddd, #bbb);
+  background-image: linear-gradient(to bottom, #ddd, #bbb);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffddd', endColorstr='#ffbbb', GradientType=0);
+}
+.progress .bar-black {
+  background-color: #5eb95e;
+  background-image: -moz-linear-gradient(top, #474949, #333);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#474949), to(#333));
+  background-image: -webkit-linear-gradient(top, #474949, #333);
+  background-image: -o-linear-gradient(top, #474949, #333);
+  background-image: linear-gradient(to bottom, #474949, #333);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff474949', endColorstr='#ff333', GradientType=0);
+}
+ul#navbar {
+    margin: 0 0 20px 0;
+}
+/* ul#navbar.affix-top {
+    top: 40px;
+    position: relative;
+    bottom: auto;
+} */
+ul#navbar.affix {
+    position: fixed;
+    top: 40px;
+}
+ul#navbar.affix-bottom {
+    position: absolute;
+    top: auto;
+    bottom: 121px;
+}

@@ -1,0 +1,54 @@
+{% extends "::base.twig" %}
+{% use "::quiz-description.twig" %}
+
+{% block content %}
+    {{ parent() }}
+
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="alert alert-info fade in">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+
+    <div class="row-fluid">
+        <div class="span4 qcm">
+            <form action="#" method="post">
+                <fieldset>
+                    <legend>Identification</legend>
+                    {{ form_widget(form) }}
+                </fieldset>
+            </form>
+        </div>
+        <div class="span8 qcm">
+            <h4>Déroulement</h4>
+            <h5>Consignes</h5>
+            <ul>
+                <li>
+                    Vous avez {{ block('quiz_description_nb_questions') }},
+                    regroupées en {{ block('quiz_description_themes') }}.
+                </li>
+                <li>La formulation au singulier ou au pluriel des questions ne présage pas du nombre de cases à cocher.</li>
+                <li>Thèmes, questions et propositions arrivent dans un ordre différent à chaque session.</li>
+                <li>Vous avez accès à Internet mais la plupart des questions vous demanderont plus de 10 secondes
+                    de recherche. Et vous n'avez pas ce temps.</li>
+            </ul>
+            <h5>Barème</h5>
+            <ul>
+                <li>
+                    Chaque question nécessite de cocher <code>1</code> à <code>N</code> cases et rapporte
+                    de <code>-1</code> à <code>1</code> point, <code>0</code> si non répondue.
+                </li>
+                <li>De manière générale, si une question requiert <code>N</code> cases cochées, alors :
+                    <ul>
+                        <li>chaque case bien cochée rapporte <code>1/N</code> point,</li>
+                        <li>
+                            chaque case mal cochée enlève <code>1/N</code> point,
+                            dans la limite de <code>-1</code> point par question.
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
