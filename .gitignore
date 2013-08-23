@@ -1,1 +1,6 @@
 /.twgit_features_subject
+/.buildpath
+/.project
+/resources/quizzes/*.php
+/vendor
+/conf/qcm.php
