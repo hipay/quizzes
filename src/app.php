@@ -12,6 +12,7 @@ use Silex\Provider\TranslationServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
+use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 
@@ -89,6 +90,7 @@ if (! $app['session']->has('state')) {
 }
 
 $app->register(new SecurityServiceProvider(), array(
+    'security.encoder.digest' => new MessageDigestPasswordEncoder('md5', false, 1),
     'security.firewalls' => array(
         'admin' => array(
             'pattern' => '^/admin/',
@@ -101,9 +103,6 @@ $app->register(new SecurityServiceProvider(), array(
             'users' => $app->share(function () use ($app) {
                 return new UserProvider($app, $app['config']['Himedia\QCM']['admin_accounts']);
             }),
-//             array(
-//                 'admin' => array('ROLE_ADMIN', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
-//             ),
         ),
         'main' => array(
             'pattern' => '^.*$',

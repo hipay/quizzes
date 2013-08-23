@@ -25,8 +25,7 @@ class UserProvider implements UserProviderInterface
         if (empty($this->aAccounts[$username])) {
             throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));
         }
-        $sPassword = $this->app['security.encoder.digest']->encodePassword($this->aAccounts[$username], NULL);
-        return new User($username, $sPassword, array('ROLE_ADMIN'), true, true, true, true);
+        return new User($username, $this->aAccounts[$username], array('ROLE_ADMIN'), true, true, true, true);
     }
 
     public function refreshUser(UserInterface $user)
