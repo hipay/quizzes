@@ -1,0 +1,74 @@
+{% extends "::base.twig" %}
+
+{% block button_row %}
+{% spaceless %}
+        {{ form_widget(form) }}
+{% endspaceless %}
+{% endblock button_row %}
+
+{% block head %}
+    {{ parent() }}
+    <link href="{{ app.request.basepath }}/js/syntaxhighlighter/shCore.css" rel="stylesheet" media="screen">
+    <link href="{{ app.request.basepath }}/js/syntaxhighlighter/shCoreDefault.css" rel="stylesheet" media="screen">
+{% endblock %}
+
+{% block content %}
+    {{ parent() }}
+
+    <div class="row-fluid">
+        <div class="span3 qcm">
+            <legend>Temps restant</legend>
+            <div class="progress">
+                <div class="bar {{ remaining_percentage_class }}" style="width: {{ remaining_percentage }}%;"></div>
+            </div>
+            Il reste {{ remaining_time }}.
+        </div>
+        <div class="span9 qcm">
+            <h4>
+                Question {{ question_number }} / {{ nb_questions }}
+                <div class="pull-right" title="Prénom et nom du candidat"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
+            </h4>
+            <form action="#" method="post">
+                <fieldset>
+
+                    {% for flashMessage in app.session.flashbag.get('notice') %}
+                        <div class="alert alert-info fade in">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            {{ flashMessage }}
+                        </div>
+                    {% endfor %}
+                    {{ form_errors(form) }}
+
+                    <div class="well">{{ question_subject|striptags('<code><pre><div>')|raw }}</div>
+                    <div class="choices">
+                        {% for choice, label in choices %}
+                            <label class="checkbox">
+                                <input type="checkbox" name="form[choices][]" value="{{ choice }}">
+                                {{ label|striptags('<code><pre><div>')|raw }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                    {% do form.choices.setRendered %}
+                    {{ form_rest(form) }}
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shCore.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushBash.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushCss.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushJava.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushJScript.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushPhp.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushPlain.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushSql.js"></script>
+    <script>
+        $(document).ready(function(){
+            SyntaxHighlighter.all();
+        });
+    </script>
+{% endblock %}

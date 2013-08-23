@@ -1,0 +1,45 @@
+{% if form is defined %}
+    {% form_theme form '::forms.twig' %}
+{% endif %}
+<!DOCTYPE html>
+<html>
+    <head>
+        {% block head %}
+            <title>{% block title %}QCM{% if subtitle is defined %} – {{ subtitle }}{% endif %}{% endblock %}</title>
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link href="{{ app.request.basepath }}/css/bootstrap.css" rel="stylesheet" media="screen">
+            <link href="{{ app.request.basepath }}/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+            <link href="{{ app.request.basepath }}/css/docs.css" rel="stylesheet" media="screen">
+            <link href="{{ app.request.basepath }}/css/qcm.css" rel="stylesheet" media="screen">
+        {% endblock %}
+    </head>
+    <body>
+        <div id="page">
+            <header>
+                <div class="container">
+                    <h1>
+                        <img src="{{ app.request.basepath }}/img/hi-media-logo.png" alt="Hi-Media logo" title="Logo Hi-Media">
+                        {%- if subtitle is defined -%}
+                            {{ subtitle }}<small> – QCM Technique</small>
+                        {% else -%}
+                            QCM Technique
+                        {% endif %}
+                    </h1>
+                </div>
+            </header>
+            <div class="container">
+                {% block content %}{% endblock %}
+            </div>
+            <footer class="footer">
+                {% block footer %}
+                    <span>&copy; Copyright 2013 by <a href="http://www.hi-media.com/">Hi-Media</a>.</span>
+                {% endblock %}
+            </footer>
+        </div>
+        {% block js %}
+            <script src="{{ app.request.basepath }}/js/jquery-1.10.2.min.js"></script>
+            <script src="{{ app.request.basepath }}/js/bootstrap.min.js"></script>
+        {% endblock %}
+    </body>
+</html>

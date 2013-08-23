@@ -1,0 +1,18 @@
+{% block quiz_description_nb_questions %}
+    <strong>{{ quiz_stats.time_limit_msg }}</strong>
+    pour répondre à <strong>{{ quiz_stats.nb_questions }} questions</strong>
+    {%- if quiz_stats.nb_questions > 0 and quiz_stats.nb_questions < quiz_stats.questions_pool_size %}
+        choisies aléatoirement parmi {{ quiz_stats.questions_pool_size }}
+    {%- endif -%}
+{% endblock %}
+
+{% block quiz_description_themes %}
+    {{ quiz_stats.themes|length }} thème{% if quiz_stats.themes|length > 1 %}s{% endif %}
+    <small>(et nb. de questions)</small> :
+    {% for theme, nbqbyt in quiz_stats.themes -%}
+        {% if theme == quiz_stats.themes|keys|last and theme != quiz_stats.themes|keys|first %} et
+        {%- elseif theme != quiz_stats.themes|keys|first -%},
+        {% endif %}
+        <em>{{ theme }}</em>&nbsp;<small>({{ nbqbyt }})</small>
+    {%- endfor -%}
+{% endblock %}

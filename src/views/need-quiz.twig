@@ -1,0 +1,50 @@
+{% extends "::base.twig" %}
+{% use "::quiz-description.twig" %}
+
+{% block content %}
+    {{ parent() }}
+    <div class="row">
+        <div class="span8 offset2 qcm">
+            <h4>
+                Débuter une nouvelle session
+                <div class="pull-right" title="Se connecter à l'interface d'administration"><a href="{{ path('admin_sessions') }}"><i class="icon-eye-open"></i> Admin</a></div>
+            </h4>
+            <form action="#" method="post" {{ form_enctype(form) }}>
+                <fieldset>
+                    {{ form_errors(form) }}
+                    <div class="quizzes">
+                        {% for choice, quiz_stats in quizzes %}
+                            {% spaceless %}
+                            <label class="radio">
+                                <input
+                                    type="radio" name="form[quizzes]"
+                                    value="{{ choice }}"
+{#                                     {% if choice == quizzes|keys|first %} checked="checked"{% endif %}#}
+                                >
+                                <h5>{{ quiz_stats.title }}</h5>
+                                <blockquote>
+                                    <p>{{ block('quiz_description_nb_questions') }},</p>
+                                    <p>{{ block('quiz_description_themes') }}.</p>
+                                </blockquote>
+                            </label>
+                            {% endspaceless %}
+                        {% endfor %}
+                    </div>
+                    {% do form.quizzes.setRendered %}
+                    {{ form_rest(form) }}
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function(){
+            $('input[type=radio]').click(function() {
+                $(this).closest("form").submit();
+            });
+        });
+    </script>
+{% endblock %}
