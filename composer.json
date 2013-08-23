@@ -1,25 +1,26 @@
 {
-    "name": "hi-media/qcm",
-    "description": "Hi-media QCM",
-    "keywords": ["QCM"],
+    "name": "hi-media/quizzes",
+    "description": "Hi-media Quizzes",
+    "keywords": ["quiz"],
     "require": {
-        "php":                         ">=5.3.3",
-        "psr/log":                     "1.0.0",
+        "php": ">=5.3.3",
+        "psr/log": "1.0.0",
         "geoffroy-aubry/errorhandler": "1.*",
         "geoffroy-aubry/helpers": "1.*",
         "silex/silex": "~1.0",
-        "twitter/bootstrap"     : "2.3.*",
         "twig/twig": ">=1.8,<2.0-dev",
-        "symfony/twig-bridge": "~2.3",
-        "symfony/console"       : "~2.3",
         "twig/extensions": "*",
-        "symfony/form": "~2.3",
-        "symfony/validator": "~2.3",
-        "symfony/translation": "~2.3",
+        "twitter/bootstrap": "2.3.*",
         "symfony/config": "~2.3",
-        "symfony/finder": "~2.3"
+        "symfony/console": "~2.3",
+        "symfony/finder": "~2.3",
+        "symfony/form": "~2.3",
+        "symfony/security": "~2.3",
+        "symfony/translation": "~2.3",
+        "symfony/twig-bridge": "~2.3",
+        "symfony/validator": "~2.3"
     },
     "autoload": {
-        "psr-0":    {"Himedia": "src/"}
+        "psr-0": {"Himedia": "src/"}
     }
 }

@@ -1,0 +1,44 @@
+{% extends "::base.twig" %}
+
+{% block content %}
+    {{ parent() }}
+
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="alert alert-info fade in">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+
+    <div class="row-fluid">
+        <div class="span4 offset4 qcm">
+            <h4>
+                Admin – connexion
+                <div class="pull-right" title="Revenir à l'accueil"><a href="{{ path('admin_logout') }}"><i class="icon-eye-close"></i> annuler</a></div>
+            </h4>
+            <form action="{{ path('admin_login_check') }}" method="post">
+                <fieldset>
+                    {% if error is not empty %}
+                        <div class="alert alert-block alert-error fade in">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            <p>{{ error }}</p>
+                        </div>
+                    {% endif %}
+                    <div class="control-group ">
+                        <label for="_username" class="required">Identifiant :</label>
+                        <div class="controls">
+                            <input type="text" id="_username" name="_username" required="required" placeholder="identifiant" value="{{ last_username }}">
+                        </div>
+                    </div>
+                    <div class="control-group ">
+                        <label for="_password" class="required">Mot de passe :</label>
+                        <div class="controls">
+                            <input type="password" id="_password" name="_password" required="required">
+                        </div>
+                    </div>
+                    <input type="submit" class="btn btn-primary" />
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}

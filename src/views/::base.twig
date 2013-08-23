@@ -20,7 +20,11 @@
                 <div class="container">
                     <h1>
                         <img src="{{ app.request.basepath }}/img/hi-media-logo.png" alt="Hi-Media logo" title="Logo Hi-Media">
-                        {%- if subtitle is defined %}{{ subtitle }}<small> – QCM Technique</small>{% else %}QCM Technique{% endif %}
+                        {%- if subtitle is defined -%}
+                            {{ subtitle }}<small> – QCM Technique</small>
+                        {% else -%}
+                            QCM Technique
+                        {% endif %}
                     </h1>
                 </div>
             </header>

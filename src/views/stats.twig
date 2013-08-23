@@ -1,0 +1,301 @@
+{% extends "::base.twig" %}
+{% use "::quiz-description.twig" %}
+{% import "::macros-stats.twig" as macros %}
+
+{% block content %}
+    {{ parent() }}
+
+    <div class="row-fluid">
+        <div class="span3 bs-docs-sidebar">
+            <ul id="navbar" class="nav nav-list bs-docs-sidenav affix" data-spy="affix" data-offset-top="101"
+              data-offset-bottom="121">
+                <li class="active"><a href="#ddls"><i class="icon-chevron-right"></i> Descriptif de la session</a></li>
+                <li><a href="#rgs"><i class="icon-chevron-right"></i> Résultat global</a></li>
+                <li><a href="#spt"><i class="icon-chevron-right"></i> Score par thème</a></li>
+                <li><a href="#tmdr"><i class="icon-chevron-right"></i> Temps moyen de réponse</a></li>
+                <li><a href="#cdr"><i class="icon-chevron-right"></i> Catégorisation des réponses</a></li>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li><a href="#cpt"><i class="icon-chevron-right"></i> Correction par thème</a></li>
+                {% endif %}
+                <li class="divider"></li>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li><a href="/admin/sessions"><i class="icon-list"></i> Liste des sessions</a></li>
+                {% else %}
+                    <li><a href="/new-quiz"><i class="icon-repeat"></i> Nouvelle session</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="span9 qcm" id="ddls">
+            <h4>
+                Descriptif de la session
+                <div class="pull-right" title="Prénom et nom du candidat"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
+            </h4>
+
+            <div class="quizzes">
+                <h5>{{ quiz_stats.title }}</h5>
+                <blockquote>
+                    <p>{{ block('quiz_description_nb_questions') }},</p>
+                    <p>{{ block('quiz_description_themes') }}.</p>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid" id="rgs">
+        <div class="span9 offset3 qcm">
+            <h4>
+                Résultat global
+                <div class="pull-right" title="Prénom et nom du candidat"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
+            </h4>
+
+            <h5>Score</h5>
+            <div class="row-fluid">
+                <div class="span12">
+                    {{ macros.global_score(
+                           quiz_results.total.score,
+                           quiz_results.total.penalty,
+                           quiz_results.total.total_nb_questions
+                    ) }}
+                    <a href="#spt"><i class="icon-zoom-in"></i> détail par thème</a>
+                </div>
+            </div>
+
+            <h5>Temps écoulé</h5>
+            <p>
+                {{ (quiz_results.total.total_elasped_time|number_format*100
+                /quiz_stats.time_limit|number_format)|number_format }} % du temps alloué consommé
+                <small>({{ quiz_results.total.total_elasped_time_msg }} pour un temps limite de {{ quiz_results.total.time_limit_msg }})</small>.
+
+                <br />
+                Temps moyen de réponse par question affichée :
+                {{ quiz_results.total.avg_elapsed_time_by_question|number_format(1) }} s
+
+                <br />
+                {% set not_displayed_questions = quiz_results.total.answer_types.not_displayed_questions %}
+                {% if not_displayed_questions == 0 %}
+                    Pas d'abandon en cours de session.
+                {% else %}
+                    {% set plural = not_displayed_questions > 1 ? 's' : '' %}
+                    <span class="text-warning">
+                        {{ '%1$s question%2$s non affichée%2$s sur %3$s'|format(not_displayed_questions, plural, quiz_results.total.total_nb_questions) }}
+                    </span>
+                    <small>(suite à abandon en cours de session)</small>.
+                {% endif %}
+
+                <br />
+                <a href="#tmdr"><i class="icon-zoom-in"></i> détail par thème</a>
+            </p>
+
+            <h5>Catégorisation des réponses</h5>
+            <div class="row-fluid">
+                <div class="span12">
+                    {{ macros.categorization_legend }}
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    {{ macros.categorization(
+                        quiz_results.total.answer_types,
+                        quiz_results.total.total_nb_questions
+                    ) }}
+                    <a href="#cdr"><i class="icon-zoom-in"></i> détail par thème</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid" id="spt">
+        <div class="span9 offset3 qcm">
+            <h4>
+                Score par thème
+                <div class="pull-right" title="Prénom et nom du candidat"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
+            </h4>
+            <h5>Tout</h5>
+            <div class="row-fluid">
+                <div class="span12">
+                    {{ macros.global_score(
+                           quiz_results.total.score,
+                           quiz_results.total.penalty,
+                           quiz_results.total.total_nb_questions
+                    ) }}
+                </div>
+            </div>
+            <h5>Par thème</h5>
+            {% if quiz_results.total.total_nb_questions == 0 %}
+                <p><small>En attente d'une première réponse du candidat…</small></p>
+            {% else %}
+                {% for theme, score in quiz_results.score_by_theme %}
+                    <div class="row-fluid">
+                        <div class="span2">{{ macros.theme_label(theme, quiz_results.total.questions_by_theme[theme]) }}</div>
+                        <div class="span10">
+                            {{ macros.score(score, quiz_results.penalty_by_theme[theme], quiz_results.total.questions_by_theme[theme]) }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row-fluid" id="tmdr">
+        <div class="span9 offset3 qcm">
+            <h4>
+                Temps moyen de réponse par question et par thème
+                <div class="pull-right" title="Prénom et nom du candidat"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
+            </h4>
+
+            {% set _min = 999999 %}
+            {% set _max = 0 %}
+            {% for theme, stats in quiz_results.avg_elapsed_time_by_theme %}
+                {% if stats.avg_elapsed_time > _max %}
+                    {% set _max = stats.avg_elapsed_time %}
+                {% endif %}
+                {% if stats.avg_elapsed_time < _min %}
+                    {% set _min = stats.avg_elapsed_time %}
+                {% endif %}
+            {% endfor %}
+            {% if _max == _min %}{% set _max = _min+1 %}{% endif %}
+
+            <em>Temps moyen de réponse exprimés par question affichée.</em>
+
+            <h5>Tout</h5>
+            {% if _max == 0 %}
+                <p><small>En attente d'une première réponse du candidat…</small></p>
+            {% else %}
+                <div class="row-fluid">
+                    <div class="span12">
+                        {% set _percent = (20 + 80*(quiz_results.total.avg_elapsed_time_by_question-_min)/(_max-_min))|number_format %}
+                        <div class="progress">
+                            <div class="bar bar-purple" style="width: {{ _percent }}%">
+                                {{ quiz_results.total.avg_elapsed_time_by_question|number_format(1) }} s
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <h5>Par thème</h5>
+            {% if _max == 0 %}
+                <p><small>En attente d'une première réponse du candidat…</small></p>
+            {% else %}
+                {% for theme, stats in quiz_results.avg_elapsed_time_by_theme %}
+                    {% set _percent = (20 + 80*(stats.avg_elapsed_time-_min)/(_max-_min))|number_format %}
+                    <div class="row-fluid">
+                        <div class="span2">{{ macros.theme_label(theme, quiz_results.total.questions_by_theme[theme]) }}</div>
+                        <div class="span10">
+                            <div class="progress">
+                                <div class="bar bar-purple" style="width: {{ _percent }}%">
+                                    {{ stats.avg_elapsed_time|number_format(1) }} s
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row-fluid" id="cdr">
+        <div class="span9 offset3 qcm">
+            <h4>
+                Catégorisation des réponses par thème
+                <div class="pull-right" title="Prénom et nom du candidat"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
+            </h4>
+            <h5>Tout</h5>
+            <div class="row-fluid">
+                <div class="span12">
+                    {{ macros.categorization_legend }}
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    {{ macros.categorization(
+                        quiz_results.total.answer_types,
+                        quiz_results.total.total_nb_questions
+                    ) }}
+                </div>
+            </div>
+            <h5>Par thème</h5>
+            {% if quiz_results.total.total_nb_questions == 0 %}
+                <p><small>En attente d'une première réponse du candidat…</small></p>
+            {% else %}
+                {% for theme, stats in quiz_results.answer_types_by_theme %}
+                    <div class="row-fluid">
+                        <div class="span2">{{ macros.theme_label(theme, quiz_results.total.questions_by_theme[theme]) }}</div>
+                        <div class="span10">
+                            {{ macros.categorization(stats, quiz_results.total.questions_by_theme[theme]) }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class="row-fluid" id="cpt">
+            <div class="span9 offset3 qcm">
+                <h4>
+                    Correction par thème
+                    <div class="pull-right" title="Prénom et nom du candidat"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
+                </h4>
+                {% if quiz_results.total.total_nb_questions == 0 %}
+                    <p><small>En attente d'une première réponse du candidat…</small></p>
+                {% else %}
+                    <ul class="theme-correction">
+                    {% for theme in quiz_results.answer_types_by_theme|keys %}
+                        <li><a href="/admin/sessions/{{ session_key }}/{{ loop.index0 }}">{{ macros.theme_label(theme, quiz_results.total.questions_by_theme[theme]) }}</a></li>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function(){
+            $("[rel=tooltip]").tooltip({placement: 'bottom'});
+
+            $('body').scrollspy();
+
+            // Afin de prendre en compte les clicks sur la navbar
+            // même lorsque tout le contenu de la page est à l'écran :
+            $("#navbar").delegate("a", "click", function() {
+                console.log('B');
+                var self = this;
+                setTimeout(function() {
+                    console.log('A');
+                    $("#navbar li").each(function(i, obj) {
+                        if (! $(obj).is($(self).parent()) && $(obj).hasClass("active")) {
+                            console.log(obj);
+                            $(obj).removeClass("active");
+                        }
+                    });
+                    if (! $(self).parent().hasClass("active")) {
+                        console.log($(self).parent());
+                        $(self).parent().addClass("active");
+                    }
+                }, 600);
+            });
+            console.log($("#navbar"));
+
+            // smooth scroll
+            $('#navbar a[href^="#"]').click(function() {
+                var href = $(this).attr('href');
+                this.setAttribute('href', '#');
+
+                $('html, body').animate({
+                    scrollTop: $(href).offset().top - 10
+                }, 500, function() {
+                });
+                window.location.hash = href;
+                this.setAttribute('href', href);
+                //return false; // commenté sinon désactive la délégation ci-desssus…
+            });
+
+            /*$(window).on('hashchange', function() {
+                $('body').scrollspy('refresh');
+            });*/
+        });
+    </script>
+{% endblock %}

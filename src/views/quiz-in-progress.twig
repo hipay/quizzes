@@ -18,15 +18,15 @@
     <div class="row-fluid">
         <div class="span3 qcm">
             <legend>Temps restant</legend>
-            <div class="progress {{ remaining_percentage_class }}">
-                <div class="bar" style="width: {{ remaining_percentage }}%;"></div>
+            <div class="progress">
+                <div class="bar {{ remaining_percentage_class }}" style="width: {{ remaining_percentage }}%;"></div>
             </div>
             Il reste {{ remaining_time }}.
         </div>
         <div class="span9 qcm">
             <h4>
                 Question {{ question_number }} / {{ nb_questions }}
-                <div class="pull-right"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
+                <div class="pull-right" title="Prénom et nom du candidat"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
             </h4>
             <form action="#" method="post">
                 <fieldset>
@@ -44,7 +44,7 @@
                         {% for choice, label in choices %}
                             <label class="checkbox">
                                 <input type="checkbox" name="form[choices][]" value="{{ choice }}">
-                                {{ label|striptags('<code>')|raw }}
+                                {{ label|striptags('<code><pre><div>')|raw }}
                             </label>
                         {% endfor %}
                     </div>
@@ -59,6 +59,9 @@
 {% block js %}
     {{ parent() }}
     <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shCore.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushBash.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushCss.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushJava.js"></script>
     <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushJScript.js"></script>
     <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushPhp.js"></script>
     <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushPlain.js"></script>

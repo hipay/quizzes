@@ -6,49 +6,27 @@ QCM Technique
 $ sudo a2enmod rewrite
 
 $ sudo vi /etc/hosts
-    127.0.0.1   qcm
-    
-$ sudo cp /etc/apache2/sites-available/default /etc/apache2/sites-available/qcm
-    <VirtualHost qcm:80>
-            ServerAdmin webmaster@localhost
-    
-            DocumentRoot /var/www/qcm/web
-            <Directory />
-                    Options FollowSymLinks
-                    AllowOverride None
-            </Directory>
-            <Directory /var/www/qcm/web>
-                    Options Indexes FollowSymLinks MultiViews
-                    AllowOverride All
-                    Order allow,deny
-                    allow from all
-            </Directory>
-    
-            ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
-            <Directory "/usr/lib/cgi-bin">
-                    AllowOverride None
-                    Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
-                    Order allow,deny
-                    Allow from all
-            </Directory>
-    
-            ErrorLog ${APACHE_LOG_DIR}/error.log
-    
-            # Possible values include: debug, info, notice, warn, error, crit,
-            # alert, emerg.
-            LogLevel warn
-    
-            CustomLog ${APACHE_LOG_DIR}/access.log combined
-    
-        Alias /doc/ "/usr/share/doc/"
-        <Directory "/usr/share/doc/">
-            Options Indexes MultiViews FollowSymLinks
-            AllowOverride None
-            Order deny,allow
-            Deny from all
-            Allow from 127.0.0.0/255.0.0.0 ::1/128
-        </Directory>
-    </VirtualHost>
+    127.0.0.1   quizzes
+       
+$ cat /etc/apache2/sites-enabled/quizzes.hi-media-techno.com 
+<Directory /var/www/quizzes/web>
+    Options -Indexes
+    AllowOverride FileInfo
+    Order allow,deny
+    allow from all
+</Directory>
+
+<VirtualHost *:80>
+    ServerName    quizzes.hi-media-techno.com
+    ServerAlias    quizzes
+    ServerAdmin    gaubry@hi-media.com
+    RewriteEngine    On
+    DocumentRoot    /var/www/quizzes/web
+
+    ErrorLog    /var/log/apache2/quizzes-error.log
+    CustomLog    /var/log/apache2/quizzes-access.log combined
+    LogLevel warn
+</VirtualHost>
 
 $ sudo service apache2 restart
 
@@ -56,10 +34,23 @@ $ sudo service apache2 restart
 
 ## Linux
 
-src="/home/geoffroy/eclipse-workspace-4.2/QCM" && \
+### Local
+
+sudo mkdir -p /var/log/himedia-quizzes
+sudo chown geoffroy:geoffroy /var/log/himedia-quizzes
+
+src="/home/geoffroy/eclipse-workspace-4.2/himedia-quizzes" && \
 dest="/var/www/qcm" && \
 rm -rf "$dest" && mkdir -p "$dest" && \
 rsync -axz --delete --exclude=".git/" --exclude=".gitignore" --stats "$src/" "$dest/"
+
+### web1.multiprojet
+
+/var/log/himedia-quizzes…
+
+src="/home/geoffroy/eclipse-workspace-4.2/himedia-quizzes" && \
+dest="web1.multiprojet:/var/www/quizzes" && \
+rsync -axz --delete --exclude=".git/" --exclude=".gitignore" --stats -e ssh "$src/" "$dest/"
 
 ## Windows
 

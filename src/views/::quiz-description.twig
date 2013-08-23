@@ -10,7 +10,7 @@
     {{ quiz_stats.themes|length }} thème{% if quiz_stats.themes|length > 1 %}s{% endif %}
     <small>(et nb. de questions)</small> :
     {% for theme, nbqbyt in quiz_stats.themes -%}
-        {% if theme == quiz_stats.themes|keys|last %} et
+        {% if theme == quiz_stats.themes|keys|last and theme != quiz_stats.themes|keys|first %} et
         {%- elseif theme != quiz_stats.themes|keys|first -%},
         {% endif %}
         <em>{{ theme }}</em>&nbsp;<small>({{ nbqbyt }})</small>

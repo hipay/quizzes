@@ -13,9 +13,12 @@
 
     <div class="row-fluid">
         <div class="span4 qcm">
+            <h4>
+                <i class="icon-user"></i> Identification
+                <div class="pull-right" title="Choisir une autre session"><a href="/new-quiz"><i class="icon-remove"></i> annuler</a></div>
+            </h4>
             <form action="#" method="post">
                 <fieldset>
-                    <legend>Identification</legend>
                     {{ form_widget(form) }}
                 </fieldset>
             </form>
@@ -28,27 +31,39 @@
                     Vous avez {{ block('quiz_description_nb_questions') }},
                     regroupées en {{ block('quiz_description_themes') }}.
                 </li>
-                <li>La formulation au singulier ou au pluriel des questions ne présage pas du nombre de cases à cocher.</li>
                 <li>Thèmes, questions et propositions arrivent dans un ordre différent à chaque session.</li>
-                <li>Vous avez accès à Internet mais la plupart des questions vous demanderont plus de 10 secondes
+                <li>Vous avez accès à Internet mais la plupart des questions vous demanderont plus de 20 secondes
                     de recherche. Et vous n'avez pas ce temps.</li>
+                <li>Le temps restant est affiché constamment.</li>
+                <li>Pas moyen de revenir sur une question précédente (page précédente et suivante sans effet).</li>
+                <li>La formulation au singulier ou au pluriel des questions ne présage pas du nombre de cases à cocher.</li>
+                <li>Toute question admet au moins une bonne proposition et au moins une mauvaise proposition.</li>
             </ul>
+            <div class="alert alert-block">
+                <strong>Attention !</strong> Il vaut mieux s'abstenir de toute réponse lorsque l'on n'est pas sûr de soi car le QCM est à points négatifs.
+            </div>
             <h5>Barème</h5>
+            Soit <code>P</code> le nombre de propositions de réponse d'une question :
             <ul>
                 <li>
-                    Chaque question nécessite de cocher <code>1</code> à <code>N</code> cases et rapporte
+                    Chaque question nécessite de cocher <code>1</code> à <code>P-1</code> cases et rapporte
                     de <code>-1</code> à <code>1</code> point, <code>0</code> si non répondue.
                 </li>
-                <li>De manière générale, si une question requiert <code>N</code> cases cochées, alors :
+                <li>Si une question requiert <code>N</code> cases cochées pour la bonne réponse, alors :
                     <ul>
                         <li>chaque case bien cochée rapporte <code>1/N</code> point,</li>
-                        <li>
-                            chaque case mal cochée enlève <code>1/N</code> point,
-                            dans la limite de <code>-1</code> point par question.
-                        </li>
+                        <li>chaque case mal cochée enlève <code>1/(P-N)</code> point.</li>
                     </ul>
                 </li>
             </ul>
+            <div class="alert alert-info">
+                <strong>Il en découle que les trois stratégies suivantes aboutissent à un score nul :</strong>
+                <ul>
+                    <li>cocher toutes les cases,</li>
+                    <li>n'en cocher aucune,</li>
+                    <li>cocher au hasard <code>1</code> à <code>P-1</code> cases.</li>
+                </ul>
+            </div>
         </div>
     </div>
 {% endblock %}

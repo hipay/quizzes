@@ -3,3 +3,4 @@
 /.project
 /resources/quizzes/*.php
 /vendor
+/conf/qcm.php
