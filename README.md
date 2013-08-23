@@ -41,17 +41,18 @@ sudo chown geoffroy:geoffroy /var/log/himedia-quizzes
 
 src="/home/geoffroy/eclipse-workspace-4.2/himedia-quizzes" && \
 dest="/var/www/qcm" && \
-rm -rf "$dest" && mkdir -p "$dest" && \
-rsync -axz --delete --exclude=".git/" --exclude=".gitignore" --stats "$src/" "$dest/"
+php $src/src/encrypt.php && \
+rsync -axz --delete --exclude=".git*" \
+    --exclude=".gitignore" --exclude=".buildpath" --exclude=".project" --exclude="/resources/quizzes/src" \
+    --stats -e ssh "$src/" "$dest/"
 
 ### web1.multiprojet
 
 /var/log/himedia-quizzes…
 
 src="/home/geoffroy/eclipse-workspace-4.2/himedia-quizzes" && \
-dest="web1.multiprojet:/var/www/quizzes" && \
-rsync -axz --delete --exclude=".git/" --exclude=".gitignore" --stats -e ssh "$src/" "$dest/"
-
-## Windows
-
-
+dest="web2.multiprojet:/var/www/quizzes" && \
+php $src/src/encrypt.php && \
+rsync -axz --delete --exclude=".git*" \
+    --exclude=".gitignore" --exclude=".buildpath" --exclude=".project" --exclude="/resources/quizzes/src" \
+    --stats -e ssh "$src/" "$dest/"

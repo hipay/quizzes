@@ -147,8 +147,14 @@ class User implements ControllerProviderInterface
         $sObfuscatedQNumber = Obfuscator::obfuscateValue($iQuestionNumber, $app['session']->get('seed'));
         $iNbQuestions = $aQuizStats['nb_questions'];
         $aQuestion = $aQuestions[$iQuestionNumber-1];
-        $sQuestionSubject = Tools::formatText($aQuestion[1]);
-        $aQuestionChoices = Tools::formatQuestionChoices(array_keys($aQuestion[2]));
+        $sQuestionSubject = Tools::formatText(
+            Tools::simpleDecrypt($aQuestion[1], $app['config']['Himedia\QCM']['crypt_salt'])
+        );
+        $aDecryptedChoices = array();
+        foreach (array_keys($aQuestion[2]) as $sChoice) {
+            $aDecryptedChoices[] = Tools::simpleDecrypt($sChoice, $app['config']['Himedia\QCM']['crypt_salt']);
+        }
+        $aQuestionChoices = Tools::formatQuestionChoices($aDecryptedChoices);
 
         $aTiming = $app['session']->get('timing');
         if (! isset($aTiming[$iQuestionNumber])) {

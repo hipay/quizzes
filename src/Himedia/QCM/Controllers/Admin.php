@@ -87,8 +87,14 @@ class Admin implements ControllerProviderInterface
         $aQuestionsChoices = array();
         foreach (array_keys($aThemeQuestions) as $iQuestionNumber) {
             $aQuestion = $aQuestions[$iQuestionNumber-1];
-            $aQuestionsSubject[$iQuestionNumber] = Tools::formatText($aQuestion[1]);
-            $aQuestionsChoices[$iQuestionNumber] = Tools::formatQuestionChoices(array_keys($aQuestion[2]));
+            $aQuestionsSubject[$iQuestionNumber] = Tools::formatText(
+                Tools::simpleDecrypt($aQuestion[1], $app['config']['Himedia\QCM']['crypt_salt'])
+            );
+            $aDecryptedChoices = array();
+            foreach (array_keys($aQuestion[2]) as $sChoice) {
+                $aDecryptedChoices[] = Tools::simpleDecrypt($sChoice, $app['config']['Himedia\QCM']['crypt_salt']);
+            }
+            $aQuestionsChoices[$iQuestionNumber] = Tools::formatQuestionChoices($aDecryptedChoices);
         }
 
         $response = $app['twig']->render('admin-theme-result.twig', array(
@@ -102,7 +108,6 @@ class Admin implements ControllerProviderInterface
             'questions' => $aQuestions,
             'answers' => $aAnswers,
             'quiz_results' => $aQuizResults,
-//             'all_themes' => $aThemes,
             'session_key' => $sSessionId,
             'theme_id' => $sThemeId
         ));

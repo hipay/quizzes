@@ -2,5 +2,7 @@
 /.buildpath
 /.project
 /resources/quizzes/*.php
+/resources/quizzes/src
 /vendor
 /conf/qcm.php
+encrypt.php
