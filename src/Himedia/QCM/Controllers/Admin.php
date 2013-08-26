@@ -146,6 +146,7 @@ class Admin implements ControllerProviderInterface
         $aSessions = array();
         $oFinder = new Finder();
         $oFinder->files()->in($sDirectory)->name('/\d{8}-\d{6}_[a-z0-9]{32}/')->depth(0)->date('since 30 days ago');
+        /* @var $oFile \Symfony\Component\Finder\SplFileInfo */
         foreach ($oFinder as $oFile) {
             $sPath = $oFile->getRealpath();
             $aSummary = $this->loadSummaryOfSession($sPath);
@@ -168,6 +169,7 @@ class Admin implements ControllerProviderInterface
         unset($aSummary['timing']);
         $aSummary['candidate'] = ucwords($aSummary['firstname']) . ' ' . ucwords($aSummary['lastname']);
         $aSummary['result'] = $oQuizPaper->correct();
+        $aSummary['filename'] = substr(strrchr($sPath, '/'), 1);
         return $aSummary;
     }
 

@@ -44,7 +44,7 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
                         {% set i = i+1 %}
                         <tr>
                             <td><a href="/admin/sessions/{{ key }}" title="Voir les résultats détaillés"><i class="icon-zoom-in"></i></a></td>
-                            <td>{{ i }}</td>
+                            <td title="{{ session.filename }}">{{ i }}</td>
 
                             {% set title = session.ip is defined and session.ip is not empty ? session.ip : '' %}
                             {% set title = title is not empty and session.host_name is defined and title != session.host_name ? title ~ ', ' ~ session.host_name : title %}
