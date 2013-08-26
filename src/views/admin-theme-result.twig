@@ -51,10 +51,16 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
                              (score >= 0.25 ? 'light-green' :
                              (score >= -0.25 ? 'yellow' :
                              (score >= -0.75 ? 'warning' : 'danger')))) %}
+        {% if timing[question_number].elapsed_time == 0 %}
+            {% set elapsed_time_badge = '<span class="label label-inverse">question non affichée</span>' %}
+        {% else %}
+            {% set elapsed_time_badge = '<span class="label label-purple">' ~ timing[question_number].elapsed_time|number_format(1) ~ ' s</span>' %}
+        {% endif %}
         <div class="row-fluid">
             <div class="span10 offset1 qcm">
                 <h4>
                     Question {{ question_number }} / {{ nb_questions }}<span class="badge badge-{{ badge_class }}" title="Score de la question">{{ score|score_format(1) }} / 1</span>
+                    {{- elapsed_time_badge|raw -}}
                     <div class="pull-right" title="Prénom et nom du candidat"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
                 </h4>
                     <div class="well">{{ question_subject|striptags('<code><pre><div>')|raw }}</div>

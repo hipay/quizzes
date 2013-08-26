@@ -133,6 +133,7 @@ class Admin implements ControllerProviderInterface
             'questions_choices' => $aQuestionsChoices,
             'questions' => $aQuestions,
             'answers' => $aAnswers,
+            'timing' => $aTiming,
             'quiz_results' => $aQuizResults,
             'session_key' => $sSessionId,
             'theme_id' => $sThemeId

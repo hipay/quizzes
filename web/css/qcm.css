@@ -164,6 +164,13 @@ div.qcm .badge-light-green {background-color: #93E093;}
 div.qcm .badge-yellow {background-color: #EBDD1C;}
 div.qcm .badge-warning {background-color: #FAA329;}
 div.qcm .badge-danger {background-color: #DA4F49;}
+div.qcm span.label {
+    vertical-align: middle;
+    margin: 0 0 2px 20px;
+}
+div.qcm .label-purple {
+    background-color: #C095DD;
+}
 div.qcm div.quizzes blockquote small:before {
     content: '';
 }
