@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "2eb61b3bafa8afdbd8bcf494a0fbdc7d",
+    "hash": "6121d49f1e5e5436a189d136cf1951d6",
     "packages": [
         {
             "name": "geoffroy-aubry/errorhandler",
@@ -1430,6 +1430,7 @@
 
     ],
     "platform": {
+        "ext-mcrypt": "*",
         "php": ">=5.3.3"
     },
     "platform-dev": [
