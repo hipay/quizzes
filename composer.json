@@ -2,6 +2,7 @@
     "name":        "hi-media/quizzes",
     "description": "Hi-media Quizzes",
     "type":        "project",
+    "license":     "GPL-3.0+",
     "keywords":    ["quiz", "technical quizzes"],
     "authors":     [
         {
