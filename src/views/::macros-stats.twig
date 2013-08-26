@@ -83,15 +83,17 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
     {% else %}
         <div class="progress">
             {% for category in categories %}
-                {% set plural = stats[category[0]] > 1 ? 's' : '' %}
-                <div
-                    class="bar bar-{{ category[1] }}"
-                    rel="tooltip"
-                    title="{{ category[2]|format(stats[category[0]], plural, n) }}"
-                    style="width: {{ (stats[category[0]]*100/n)|number_format }}%"
-                >
-                    {{ stats[category[0]] }}
-                </div>
+                {% if stats[category[0]] > 0 %}
+                    {% set plural = stats[category[0]] > 1 ? 's' : '' %}
+                    <div
+                        class="bar bar-{{ category[1] }}"
+                        rel="tooltip"
+                        title="{{ category[2]|format(stats[category[0]], plural, n) }}"
+                        style="width: {{ (stats[category[0]]*100/n)|number_format(3) }}%"
+                    >
+                        {{ stats[category[0]] }}
+                    </div>
+                {% endif %}
             {% endfor %}
         </div>
     {% endif %}
