@@ -57,6 +57,7 @@ class Quiz implements \Serializable
     public function serialize() {
         return serialize($this->aData);
     }
+
     public function unserialize($data) {
         $this->aData = unserialize($data);
         $this->aStats = $this->processStats();

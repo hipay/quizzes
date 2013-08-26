@@ -214,9 +214,9 @@ class User implements ControllerProviderInterface
                 'expanded' => true
             ))
             ->add('qnumber', 'hidden', array('data' => $sObfuscatedQNumber))
-            ->add('save', 'submit', array('label' => 'Valider', 'attr' => array('class' => 'btn btn-primary')))
+            ->add('save', 'submit', array('label' => 'Valider / passer', 'attr' => array('class' => 'btn btn-primary')))
             ->add('withdraw', 'submit', array(
-                'label' => 'Abréger les souffrances…',
+                'label' => 'Arrêter la session…',
                 'attr' => array(
                     'class' => 'btn btn-warning btn-mini pull-right',
                     'onClick' => "return confirm('Êtes-vous sûr(e) de vouloir arrêter la session ?');"
