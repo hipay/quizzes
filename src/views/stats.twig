@@ -79,8 +79,9 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
 
             <h5>Temps écoulé</h5>
             <p>
-                {{ (quiz_results.total.total_elasped_time|number_format*100
-                /quiz_stats.time_limit|number_format)|number_format }} % du temps alloué consommé
+                {% set elapsed100 = (quiz_results.total.total_elasped_time|number_format*100
+                    /quiz_stats.time_limit|number_format)|number_format %}
+                {{ elapsed100 }} % du temps alloué consommé
                 <small>({{ quiz_results.total.total_elasped_time_msg }} pour un temps limite de {{ quiz_results.total.time_limit_msg }})</small>.
 
                 <br />
@@ -96,7 +97,11 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
                     <span class="text-warning">
                         {{ '%1$s question%2$s non affichée%2$s sur %3$s'|format(not_displayed_questions, plural, quiz_results.total.total_nb_questions) }}
                     </span>
-                    <small>(suite à abandon en cours de session)</small>.
+                    {% if elapsed100 >= 100 %}
+                        <small>(par manque de temps)</small>.
+                    {% else %}
+                        <small>(suite à abandon en cours de session)</small>.
+                    {% endif %}
                 {% endif %}
 
                 <br />
