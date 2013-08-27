@@ -283,23 +283,18 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
             // Afin de prendre en compte les clicks sur la navbar
             // même lorsque tout le contenu de la page est à l'écran :
             $("#navbar").delegate("a", "click", function() {
-                console.log('B');
                 var self = this;
                 setTimeout(function() {
-                    console.log('A');
                     $("#navbar li").each(function(i, obj) {
                         if (! $(obj).is($(self).parent()) && $(obj).hasClass("active")) {
-                            console.log(obj);
                             $(obj).removeClass("active");
                         }
                     });
                     if (! $(self).parent().hasClass("active")) {
-                        console.log($(self).parent());
                         $(self).parent().addClass("active");
                     }
                 }, 600);
             });
-            console.log($("#navbar"));
 
             // smooth scroll
             $('#navbar a[href^="#"]').click(function() {
