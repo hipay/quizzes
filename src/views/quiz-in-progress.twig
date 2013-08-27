@@ -33,12 +33,12 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
     {{ parent() }}
 
     <div class="row-fluid">
-        <div class="span3 qcm">
+        <div class="span3 qcm" id="remaining-time">
             <legend>Temps restant</legend>
             <div class="progress">
                 <div class="bar {{ remaining_percentage_class }}" style="width: {{ remaining_percentage }}%;"></div>
             </div>
-            Il reste {{ remaining_time }}.
+            <span>Il reste {{ remaining_time_msg }}.</span>
         </div>
         <div class="span9 qcm">
             <h4>
@@ -84,8 +84,55 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
     <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushPlain.js"></script>
     <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushSql.js"></script>
     <script>
-        $(document).ready(function(){
+        $(document).ready(function() {
+
+            function refreshRemainingTime (timelimit, max_elapsed_time) {
+                var remaining_seconds = timelimit - Math.round(new Date().getTime()/1000);
+                var minutes = Math.floor(remaining_seconds / 60);
+                var seconds = remaining_seconds % 60;
+
+                // Message temps restant :
+                var msg = '';
+                if (remaining_seconds <= 0) {
+                    if (remaining_seconds <= -2) {
+                        location.reload();
+                    }
+                    msg = 'Temps écoulé.';
+                } else {
+                    if (minutes > 0) {
+                        msg += minutes + ' minute' + (minutes > 1 ? 's' : '');
+                    }
+                    if (minutes == 0 || seconds != 0) {
+                        msg += (minutes > 0 ? ' et ' : '') + seconds + ' seconde' + (seconds > 1 ? 's' : '');
+                    }
+                    msg = 'Il reste ' + msg + '.';
+                }
+                $('#remaining-time span').html(msg);
+
+                // Barre de temps restant :
+                var remaining_percentage = Math.round(remaining_seconds*100/max_elapsed_time);
+                var remaining_percentage_class = '';
+                if (remaining_percentage <= 5) {
+                    remaining_percentage_class = 'bar-danger';
+                } else if (remaining_percentage <= 15) {
+                    remaining_percentage_class = 'bar-warning';
+                } else if (remaining_percentage <= 30) {
+                    remaining_percentage_class = 'bar-yellow';
+                } else if (remaining_percentage <= 50) {
+                    remaining_percentage_class = 'bar-light-green';
+                } else {
+                    remaining_percentage_class = 'bar-success';
+                }
+                $('#remaining-time div.bar')
+                    .width(remaining_percentage + '%')
+                    .removeClass()
+                    .addClass('bar ' + remaining_percentage_class);
+            }
+
             SyntaxHighlighter.all();
+            var delta_timestamp = Math.round(new Date().getTime()/1000) - {{ server_timestamp }};
+            var client_timelimit = {{ server_timelimit }} + delta_timestamp;
+            setInterval(function(){refreshRemainingTime(client_timelimit, {{ max_elapsed_time }})}, 1000);
         });
     </script>
 {% endblock %}
