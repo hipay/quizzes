@@ -79,8 +79,7 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
 
             <h5>Temps écoulé</h5>
             <p>
-                {% set elapsed100 = (quiz_results.total.total_elasped_time|number_format*100
-                    /quiz_stats.time_limit|number_format)|number_format %}
+                {% set elapsed100 = (quiz_results.total.total_elasped_time*100/quiz_stats.time_limit)|number_format %}
                 {{ elapsed100 }} % du temps alloué consommé
                 <small>({{ quiz_results.total.total_elasped_time_msg }} pour un temps limite de {{ quiz_results.total.time_limit_msg }})</small>.
 
