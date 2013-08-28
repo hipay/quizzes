@@ -39,9 +39,7 @@ class Tools
             $sTimelimitMsg = $iRemainingMinutes . ' minute' . ($iRemainingMinutes > 1 ? 's' : '');
         }
         if ($iRemainingSeconds < 60 || $iRemainingSeconds % 60 != 0) {
-            $sTimelimitMsg .= ($iRemainingSeconds >= 60 ? ' et ' : '')
-            . ($iRemainingSeconds % 60) . ' seconde'
-                . ($iRemainingSeconds % 60 > 1 ? 's' : '');
+            $sTimelimitMsg .= ($iRemainingSeconds >= 60 ? ' et ' : '') . ($iRemainingSeconds % 60) . ' s';
         }
         return $sTimelimitMsg;
     }
