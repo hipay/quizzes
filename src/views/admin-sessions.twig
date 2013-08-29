@@ -41,6 +41,7 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
                         <th>Statut</th>
                         <th>Date de fin</th>
                         <th>Score <small>/100</small></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,16 +74,23 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
                             <td>{{ session.timelimit|date('Y-m-d H:i:s', 'Europe/Paris') }}</td>
 
                             {% if session.result.total.total_nb_questions == 0 %}
-                                <td class="text-info" rel="tooltip" title="encore aucune question répondue">NA</td>
+                                <td class="text-info" title="encore aucune question répondue">NA</td>
                             {% else %}
                                 {% set score = session.result.total.score|score_format(1) ~ ' points sur ' ~ session.result.total.total_nb_questions %}
                                 {% set score100 = (session.result.total.score*100/session.result.total.total_nb_questions)|number_format %}
                                 {% if session.state == 'quiz-in-progress' %}
-                                    <td class="text-info" rel="tooltip" title="{{ score }}, score provisoire ne tenant compte que des questions affichées">{{ score100 }}</td>
+                                    <td class="text-info" title="{{ score }}, score provisoire ne tenant compte que des questions affichées">{{ score100 }}</td>
                                 {% else %}
-                                    <td rel="tooltip" title="{{ score }}">{{ score100 }}</td>
+                                    <td title="{{ score }}">{{ score100 }}</td>
                                 {% endif %}
                             {% endif %}
+
+                            <td>
+                                <form action="/admin/sessions/{{ key }}" method="post" class="sessions">
+                                    <input type="hidden" id="_method" name="_method" value="DELETE" />
+                                    <input type="submit" class="icon-trash" value="" title="Supprimer définitivement cette session" />
+                                </form>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

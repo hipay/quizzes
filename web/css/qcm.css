@@ -29,6 +29,15 @@ div.qcm {
 div.qcm form label {
     margin-bottom: 10px;
 }
+div.qcm form.sessions {
+    margin: 0;
+}
+div.qcm form.sessions input[type=submit] {
+    border: 0;
+    background-color: rgba(0, 0, 0, 0);
+    width: 16px;
+    height: 16px;
+}
 div.qcm h4 > i {
     vertical-align: baseline;
 }

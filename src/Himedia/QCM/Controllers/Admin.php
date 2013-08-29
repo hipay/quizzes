@@ -44,6 +44,7 @@ class Admin implements ControllerProviderInterface
         $oController = $app['controllers_factory'];
         $oController->match('/sessions', 'Himedia\QCM\Controllers\Admin::sessions')->bind('admin_sessions');
         $oController->get('/sessions/{sSessionId}', 'Himedia\QCM\Controllers\Admin::sessionResult');
+        $oController->delete('/sessions/{sSessionId}', 'Himedia\QCM\Controllers\Admin::deleteSession');
         $oController->get('/sessions/{sSessionId}/{sThemeId}', 'Himedia\QCM\Controllers\Admin::themeResult');
         return $oController;
     }
@@ -57,6 +58,15 @@ class Admin implements ControllerProviderInterface
         return $app['twig']->render('admin-sessions.twig', array(
             'sessions' => $aObfuscatedSessions
         ));
+    }
+
+    public function deleteSession (Application $app, Request $request, $sSessionId)
+    {
+        $sDir = $app['config']['Himedia\QCM']['dir']['sessions'];
+        $aSessions = $this->getAllSessions($sDir);
+        $sSessionPath = Obfuscator::unobfuscateKey($sSessionId, $aSessions, $app['session']->get('seed'));
+        unlink($sSessionPath);
+        return $app->redirect('/admin/sessions');
     }
 
     public function sessionResult (Application $app, Request $request, $sSessionId)

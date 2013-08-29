@@ -29,6 +29,7 @@ use Silex\Provider\TranslationServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
@@ -132,6 +133,7 @@ $app->register(new SecurityServiceProvider(), array(
     )
 ));
 
+Request::enableHttpMethodParameterOverride();
 $app->mount('/',      new User());
 $app->mount('/admin', new Admin());
 return $app;
