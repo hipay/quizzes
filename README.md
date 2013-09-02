@@ -1,58 +1,8 @@
-QCM Technique
-=============
+# Quizzes
 
-# Apache 2
+Plate-forme de quizzes à choix multiples (QCM) avec interface d'analyse des résultats.
 
-$ sudo a2enmod rewrite
+## Copyrights & licensing
 
-$ sudo vi /etc/hosts
-    127.0.0.1   quizzes
-       
-$ cat /etc/apache2/sites-enabled/quizzes.hi-media-techno.com 
-<Directory /var/www/quizzes/web>
-    Options -Indexes
-    AllowOverride FileInfo
-    Order allow,deny
-    allow from all
-</Directory>
-
-<VirtualHost *:80>
-    ServerName    quizzes.hi-media-techno.com
-    ServerAlias    quizzes
-    ServerAdmin    gaubry@hi-media.com
-    RewriteEngine    On
-    DocumentRoot    /var/www/quizzes/web
-
-    ErrorLog    /var/log/apache2/quizzes-error.log
-    CustomLog    /var/log/apache2/quizzes-access.log combined
-    LogLevel warn
-</VirtualHost>
-
-$ sudo service apache2 restart
-
-# Déploiement
-
-## Linux
-
-### Local
-
-sudo mkdir -p /var/log/himedia-quizzes
-sudo chown geoffroy:geoffroy /var/log/himedia-quizzes
-
-src="/home/geoffroy/eclipse-workspace-4.2/himedia-quizzes" && \
-dest="/var/www/qcm" && \
-php $src/src/encrypt.php && \
-rsync -axz --delete --exclude=".git*" \
-    --exclude=".gitignore" --exclude=".buildpath" --exclude=".project" --exclude="/resources/quizzes/src" \
-    --stats -e ssh "$src/" "$dest/"
-
-### web1.multiprojet
-
-/var/log/himedia-quizzes…
-
-src="/home/geoffroy/eclipse-workspace-4.2/himedia-quizzes" && \
-dest="web2.multiprojet:/var/www/quizzes" && \
-php $src/src/encrypt.php && \
-rsync -axz --delete --exclude=".git*" \
-    --exclude=".gitignore" --exclude=".buildpath" --exclude=".project" --exclude="/resources/quizzes/src" \
-    --stats -e ssh "$src/" "$dest/"
+Licensed under the GNU General Public License v3 (GPL-3.0+).
+See [LICENSE](LICENSE) file for details.
