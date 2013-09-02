@@ -183,9 +183,38 @@ Correction d'une question, accessible seulement à partir de la zone privée :
 
 Configuration d'un questionnaire, dans `/resources/quizzes/src` :
 
-[![Configuration d'un questionnaire](doc/images/questionnaire_config.png "Configuration d'un questionnaire")](doc/images/questionnaire_config.png)
+```php
+<?php
+
+return array(
+    'meta' => array(
+        'title' => 'POO et design patterns',
+        'time_limit' => 15*20,
+        'max_nb_questions' => 0
+    ),
+    'questions' => array(
+        array(
+            'POO',
+            "Quel est le patron de conception central dans Doctrine 2 ?",
+            array(
+                "table data gateway" => false,
+                "active record" => false,
+                "data mapper" => true,
+                "row data gateway" => false,
+            )
+        ),
+        …
+    )
+);
+```
 
 ## Copyrights & licensing
 
 Licensed under the GNU General Public License v3 (GPL-3.0+).
 See [LICENSE](LICENSE) file for details.
+
+## Change log
+See [CHANGELOG](CHANGELOG.md) file for details.
+
+## Git branching model
+The git branching model used for development is the one described and assisted by `twgit` tool: [https://github.com/Twenga/twgit](https://github.com/Twenga/twgit).
