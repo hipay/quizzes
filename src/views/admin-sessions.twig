@@ -1,0 +1,109 @@
+{#
+This file is part of Hi-Media Quizzes.
+
+Hi-Media Quizzes is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Hi-Media Quizzes is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
+#}
+
+{% extends "::base.twig" %}
+
+{% block head %}
+    {{ parent() }}
+    <meta http-equiv="refresh" content="10" />
+{% endblock %}
+
+{% block content %}
+    {{ parent() }}
+    <div class="row">
+        <div class="span10 offset1 qcm">
+            <h4>
+                Sessions
+                <div class="pull-right" title="Se déconnecter de l'interface d'administration"><a href="{{ path('admin_logout') }}"><i class="icon-eye-close"></i> se déconnecter</a></div>
+            </h4>
+
+            <table class="table table-condensed table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>#</th>
+                        <th>Candidat</th>
+                        <th>Questionnaire</th>
+                        <th>Statut</th>
+                        <th>Date de fin</th>
+                        <th>Score <small>/100</small></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set i = 0 %}
+                    {% for key, session in sessions %}
+                        {% set i = i+1 %}
+                        <tr>
+                            <td><a href="/admin/sessions/{{ key }}" title="Voir les résultats détaillés"><i class="icon-zoom-in"></i></a></td>
+                            <td title="{{ session.filename }}">{{ i }}</td>
+
+                            {% set title = session.ip is defined and session.ip is not empty ? session.ip : '' %}
+                            {% set title = title is not empty and session.host_name is defined and title != session.host_name ? title ~ ', ' ~ session.host_name : title %}
+                            <td title="{{ title }}">{{ session.candidate }}</td>
+
+                            <td>{{ session.quiz_stats.title }}</td>
+
+                            {% if session.state == 'quiz-in-progress' %}
+                                {% if date(session.timelimit) < date() %}
+                                    {% set status_msg = 'évaporé, ' ~ session.result.total.total_nb_questions ~ '/' ~ session.quiz_stats.nb_questions ~ ' ?' %}
+                                    <td class="text-warning"><i class="icon-time"></i> {{ status_msg }}</td>
+                                {% else %}
+                                    {% set status_msg = 'en cours, ' ~ session.result.total.total_nb_questions ~ '/' ~ session.quiz_stats.nb_questions %}
+                                    <td class="text-info"><i class="icon-refresh"></i> {{ status_msg }}</td>
+                                {% endif %}
+                            {% else %}
+                                {% set status_msg = 'terminé' %}
+                                <td><i class="icon-ok"></i> {{ status_msg }}</td>
+                            {% endif %}
+
+                            <td>{{ session.timelimit|date('Y-m-d H:i:s', 'Europe/Paris') }}</td>
+
+                            {% if session.result.total.total_nb_questions == 0 %}
+                                <td class="text-info" title="encore aucune question répondue">NA</td>
+                            {% else %}
+                                {% set score = session.result.total.score|score_format(1) ~ ' points sur ' ~ session.result.total.total_nb_questions %}
+                                {% set score100 = (session.result.total.score*100/session.result.total.total_nb_questions)|number_format %}
+                                {% if session.state == 'quiz-in-progress' %}
+                                    <td class="text-info" title="{{ score }}, score provisoire ne tenant compte que des questions affichées">{{ score100 }}</td>
+                                {% else %}
+                                    <td title="{{ score }}">{{ score100 }}</td>
+                                {% endif %}
+                            {% endif %}
+
+                            <td>
+                                <form action="/admin/sessions/{{ key }}" method="post" class="sessions">
+                                    <input type="hidden" id="_method" name="_method" value="DELETE" />
+                                    <input type="submit" class="icon-trash" value="" title="Supprimer définitivement cette session" />
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function(){
+            $("[rel=tooltip]").tooltip({placement: 'bottom'});
+        });
+    </script>
+{% endblock %}

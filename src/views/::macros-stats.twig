@@ -1,0 +1,122 @@
+{#
+This file is part of Hi-Media Quizzes.
+
+Hi-Media Quizzes is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Hi-Media Quizzes is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
+#}
+
+{% macro theme_label(name, nb_questions) %}
+    {%- set plural = nb_questions > 1 ? 's' : '' -%}
+    {%- set small_title = '%1$s question%2$s posée%2$s dans le thème %3$s'|format(nb_questions, plural, name) -%}
+    <em>{{ name }}</em>&nbsp;<small title="{{ small_title }}">({{ nb_questions }})</small>
+{% endmacro %}
+
+{% macro global_score(score, penalty, n) %}
+    {% set score100 = ( n == 0 ? 0 : (score*100/n)|number_format) %}
+    {% if score < 0 %}
+        <div class="alert alert-score">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Attention !</strong> Score négatif.
+        </div>
+    {% endif %}
+    <p>
+        Score normalisé de <span class="score">{{ score100 }}/100</span>
+        <small>({{ _self.score_legend(score, penalty, n) }})</small>.
+    </p>
+    {{ _self.score(score, penalty, n) }}
+{% endmacro %}
+
+{% macro score(score, penalty, n) %}
+    {% set min_percentage = 7 %}
+    {% set score100 = ( n == 0 ? 0 : (score*100/n)|number_format) %}
+    {% set with_score100 = (score100 < min_percentage ? min_percentage : score100) %}
+    {% set penalty100 = ( n == 0 ? 0 : (penalty*100/n)|abs|number_format) %}
+    {% set with_penalty100 = (penalty100 < min_percentage ? min_percentage : penalty100) %}
+    <div class="progress">
+        <div class="bar" rel="tooltip"
+            title="{{ _self.score_legend(score, penalty, n) }}."
+            style="width: {{ with_score100 }}%"
+        >
+            {{ score100 }}&nbsp;%
+        </div>
+        {% if penalty != 0 %}
+            <div class="bar bar-grey" rel="tooltip"
+                title="pénalité incluse de {{ penalty|abs|score_format(1) }} point{% if penalty|abs > 1 %}s{% endif -%}"
+                style="width: {{ with_penalty100 > 100-with_score100 ? 100-with_score100 : with_penalty100 }}%; float: right"
+            >
+                {{ penalty100 }}&nbsp;%
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro score_legend(score, penalty, n) -%}
+    {{ score|score_format(1) }} point{% if score|abs > 1 %}s{% endif %} sur {{ n }},
+    {%  if penalty == 0 %}
+        sans pénalité
+    {%- else %}
+        comprenant une pénalité de {{ penalty|abs|score_format(1) }} point{% if penalty|abs > 1 %}s{% endif -%}
+    {%- endif %}
+{% endmacro %}
+
+{% macro categorization(stats, n) %}
+    {% set categories = [
+        ['right_answers',               'success',     '%1$s réponse%2$s correcte%2$s et complète%2$s sur %3$s'],
+        ['good_but_incomplete_answers', 'light-green', '%1$s réponse%2$s juste%2$s mais incomplète%2$s sur %3$s'],
+        ['skipped_questions',           'yellow',      '%1$s question%2$s affichée%2$s mais non répondue%2$s sur %3$s'],
+        ['partially_wrong_answers',     'warning',     '%1$s réponse%2$s partiellement fausse%2$s sur %3$s'],
+        ['full_wrong_answers',          'danger',      '%1$s réponse%2$s complètement fausse%2$s sur %3$s'],
+        ['not_displayed_questions',     'black',       '%1$s question%2$s non affichée%2$s sur %3$s'],
+    ] %}
+    {% if n == 0 %}
+        <p><small>En attente d'une première réponse du candidat…</small></p>
+    {% else %}
+        <div class="progress">
+            {% for category in categories %}
+                {% if stats[category[0]] > 0 %}
+                    {% set plural = stats[category[0]] > 1 ? 's' : '' %}
+                    <div
+                        class="bar bar-{{ category[1] }}"
+                        rel="tooltip"
+                        title="{{ category[2]|format(stats[category[0]], plural, n) }}"
+                        style="width: {{ (stats[category[0]]*100/n)|number_format(3) }}%"
+                    >
+                        {{ stats[category[0]] }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endmacro %}
+
+{% macro categorization_legend() %}
+    {% set categories = [
+        ['success',     'réponse correcte\net complète'],
+        ['light-green', 'réponse juste\nmais incomplète'],
+        ['yellow',      'question affichée\nmais non répondue'],
+        ['warning',     'réponse\npartiellement fausse'],
+        ['danger',      'réponse\ncomplètement fausse'],
+        ['black',       'question\nnon affichée'],
+    ] %}
+    <div class="legend">
+        <ul>
+            {% for category in categories %}
+                <li>
+                    <div class="progress">
+                        <div class="bar bar-{{ category[0] }}"></div>
+                    </div><small>{{ category[1]|nl2br }}</small>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endmacro %}

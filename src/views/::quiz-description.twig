@@ -1,0 +1,35 @@
+{#
+This file is part of Hi-Media Quizzes.
+
+Hi-Media Quizzes is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Hi-Media Quizzes is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
+#}
+
+{% block quiz_description_nb_questions %}
+    <strong>{{ quiz_stats.time_limit_msg }}</strong>
+    pour répondre à <strong>{{ quiz_stats.nb_questions }} questions</strong>
+    {%- if quiz_stats.nb_questions > 0 and quiz_stats.nb_questions < quiz_stats.questions_pool_size %}
+        choisies aléatoirement parmi {{ quiz_stats.questions_pool_size }}
+    {%- endif -%}
+{% endblock %}
+
+{% block quiz_description_themes %}
+    {{ quiz_stats.themes|length }} thème{% if quiz_stats.themes|length > 1 %}s{% endif %}
+    <small>(et nb. de questions)</small> :
+    {% for theme, nbqbyt in quiz_stats.themes -%}
+        {% if theme == quiz_stats.themes|keys|last and theme != quiz_stats.themes|keys|first %} et
+        {%- elseif theme != quiz_stats.themes|keys|first -%},
+        {% endif %}
+        <em>{{ theme }}</em>&nbsp;<small>({{ nbqbyt }})</small>
+    {%- endfor -%}
+{% endblock %}

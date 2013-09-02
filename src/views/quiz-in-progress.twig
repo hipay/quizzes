@@ -1,0 +1,138 @@
+{#
+This file is part of Hi-Media Quizzes.
+
+Hi-Media Quizzes is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Hi-Media Quizzes is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
+#}
+
+{% extends "::base.twig" %}
+
+{% block button_row %}
+{% spaceless %}
+        {{ form_widget(form) }}
+{% endspaceless %}
+{% endblock button_row %}
+
+{% block head %}
+    {{ parent() }}
+    <link href="{{ app.request.basepath }}/js/syntaxhighlighter/shCore.css" rel="stylesheet" media="screen">
+    <link href="{{ app.request.basepath }}/js/syntaxhighlighter/shCoreDefault.css" rel="stylesheet" media="screen">
+{% endblock %}
+
+{% block content %}
+    {{ parent() }}
+
+    <div class="row-fluid">
+        <div class="span3 qcm" id="remaining-time">
+            <legend>Temps restant</legend>
+            <div class="progress">
+                <div class="bar {{ remaining_percentage_class }}" style="width: {{ remaining_percentage }}%;"></div>
+            </div>
+            <span>Il reste {{ remaining_time_msg }}.</span>
+        </div>
+        <div class="span9 qcm">
+            <h4>
+                Question {{ question_number }} / {{ nb_questions }}
+                <div class="pull-right" title="Prénom et nom du candidat"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
+            </h4>
+            <form action="#" method="post">
+                <fieldset>
+
+                    {% for flashMessage in app.session.flashbag.get('notice') %}
+                        <div class="alert alert-info fade in">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            {{ flashMessage }}
+                        </div>
+                    {% endfor %}
+                    {{ form_errors(form) }}
+
+                    <div class="well">{{ question_subject|striptags('<code><pre><div>')|raw }}</div>
+                    <div class="choices">
+                        {% for choice, label in choices %}
+                            <label class="checkbox">
+                                <input type="checkbox" name="form[choices][]" value="{{ choice }}">
+                                {{ label|striptags('<code><pre><div>')|raw }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                    {% do form.choices.setRendered %}
+                    {{ form_rest(form) }}
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shCore.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushBash.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushCss.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushJava.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushJScript.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushPhp.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushPlain.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushSql.js"></script>
+    <script>
+        $(document).ready(function() {
+
+            function refreshRemainingTime (timelimit, max_elapsed_time) {
+                var remaining_seconds = timelimit - Math.round(new Date().getTime()/1000);
+                var minutes = Math.floor(remaining_seconds / 60);
+                var seconds = remaining_seconds % 60;
+
+                // Message temps restant :
+                var msg = '';
+                if (remaining_seconds <= 0) {
+                    if (remaining_seconds <= -2) {
+                        location.reload();
+                    }
+                    msg = 'Temps écoulé.';
+                } else {
+                    if (minutes > 0) {
+                        msg += minutes + ' minute' + (minutes > 1 ? 's' : '');
+                    }
+                    if (minutes == 0 || seconds != 0) {
+                        msg += (minutes > 0 ? ' et ' : '') + seconds + ' s';
+                    }
+                    msg = 'Il reste ' + msg + '.';
+                }
+                $('#remaining-time span').html(msg);
+
+                // Barre de temps restant :
+                var remaining_percentage = Math.round(remaining_seconds*100/max_elapsed_time);
+                var remaining_percentage_class = '';
+                if (remaining_percentage <= 5) {
+                    remaining_percentage_class = 'bar-danger';
+                } else if (remaining_percentage <= 15) {
+                    remaining_percentage_class = 'bar-warning';
+                } else if (remaining_percentage <= 30) {
+                    remaining_percentage_class = 'bar-yellow';
+                } else if (remaining_percentage <= 50) {
+                    remaining_percentage_class = 'bar-light-green';
+                } else {
+                    remaining_percentage_class = 'bar-success';
+                }
+                $('#remaining-time div.bar')
+                    .width(remaining_percentage + '%')
+                    .removeClass()
+                    .addClass('bar ' + remaining_percentage_class);
+            }
+
+            SyntaxHighlighter.all();
+            var delta_timestamp = Math.round(new Date().getTime()/1000) - {{ server_timestamp }};
+            var client_timelimit = {{ server_timelimit }} + delta_timestamp;
+            setInterval(function(){refreshRemainingTime(client_timelimit, {{ max_elapsed_time }})}, 1000);
+        });
+    </script>
+{% endblock %}

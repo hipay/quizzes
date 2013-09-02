@@ -1,0 +1,108 @@
+{#
+This file is part of Hi-Media Quizzes.
+
+Hi-Media Quizzes is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Hi-Media Quizzes is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
+#}
+
+{% extends "::base.twig" %}
+
+{% block head %}
+    {{ parent() }}
+    <link href="{{ app.request.basepath }}/js/syntaxhighlighter/shCore.css" rel="stylesheet" media="screen">
+    <link href="{{ app.request.basepath }}/js/syntaxhighlighter/shCoreDefault.css" rel="stylesheet" media="screen">
+{% endblock %}
+
+{% block content %}
+    {{ parent() }}
+
+    <div class="navbar">
+        <div class="navbar-inner">
+            <ul class="nav">
+                <li><a href="/admin/sessions"><i class="icon-list"></i> Sessions</a></li>
+                <li><a href="/admin/sessions/{{ session_key }}"><i class="icon-zoom-in"></i> Stats</a></li>
+                <li class="divider-vertical"></li>
+{#                 {% for theme in all_themes %}#}
+                {% for theme in quiz_results.answer_types_by_theme|keys %}
+                    {% if theme_id == loop.index0 %}
+                        <li class="active"><a href="#">{{ theme }}</a></li>
+                    {% else %}
+                        <li><a href="/admin/sessions/{{ session_key }}/{{ loop.index0 }}">{{ theme }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    {% for question_number, score in theme_questions %}
+        {% set question_subject = questions_subject[question_number] %}
+        {% set choices = questions_choices[question_number] %}
+        {% set badge_class = (score >= 0.75 ? 'success' :
+                             (score >= 0.25 ? 'light-green' :
+                             (score >= -0.25 ? 'yellow' :
+                             (score >= -0.75 ? 'warning' : 'danger')))) %}
+        {% if timing[question_number].elapsed_time == 0 %}
+            {% set elapsed_time_badge = '<span class="label label-inverse">question non affichée</span>' %}
+        {% else %}
+            {% set elapsed_time_badge = '<span class="label label-purple">' ~ timing[question_number].elapsed_time|number_format(1) ~ ' s</span>' %}
+        {% endif %}
+        <div class="row-fluid">
+            <div class="span10 offset1 qcm">
+                <h4>
+                    Question {{ question_number }} / {{ nb_questions }}<span class="badge badge-{{ badge_class }}" title="Score de la question">{{ score|score_format(1) }} / 1</span>
+                    {{- elapsed_time_badge|raw -}}
+                    <div class="pull-right" title="Prénom et nom du candidat"><i class="icon-user"></i> {{ firstname }} {{ lastname }}</div>
+                </h4>
+                    <div class="well">{{ question_subject|striptags('<code><pre><div>')|raw }}</div>
+                    <div class="choices"><ul class="unstyled">
+                        {% for choice, label in choices %}
+                            <li>
+                                {% if loop.index0 in answers[question_number] %}
+                                    {% if (questions[question_number-1][2]|values)[loop.index0] %}
+                                        <i class="icon-accept" title="Proposition cochée à bon escient"></i>
+                                    {% else %}
+                                        <i class="icon-delete" title="Proposition injustement cochée"></i>
+                                    {% endif %}
+                                {% else %}
+                                    <i class="icon-empty16" title="Proposition non cochée"></i>
+                                {% endif %}
+                                {% if (questions[question_number-1][2]|values)[loop.index0] %}
+                                    <i class="icon-ok" title="Proposition à cocher"></i>
+                                {% else %}
+                                    <i class="icon-empty" title="Proposition à ne pas cocher"></i>
+                                {% endif %}
+                                – {{ label|striptags('<code><pre><div>')|raw }}
+                            </li>
+                        {% endfor %}
+                    </ul></div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shCore.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushBash.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushCss.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushJava.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushJScript.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushPhp.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushPlain.js"></script>
+    <script src="{{ app.request.basepath }}/js/syntaxhighlighter/shBrushSql.js"></script>
+    <script>
+        $(document).ready(function(){
+            SyntaxHighlighter.all();
+        });
+    </script>
+{% endblock %}
