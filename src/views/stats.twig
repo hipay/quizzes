@@ -147,7 +147,7 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
             {% else %}
                 {% for theme, score in quiz_results.score_by_theme %}
                     <div class="row-fluid">
-                        <div class="span2">{{ macros.theme_label(theme, quiz_results.total.questions_by_theme[theme]) }}</div>
+                        <div class="span2 theme">{{ macros.theme_label(theme, quiz_results.total.questions_by_theme[theme]) }}</div>
                         <div class="span10">
                             {{ macros.score(score, quiz_results.penalty_by_theme[theme], quiz_results.total.questions_by_theme[theme]) }}
                         </div>
@@ -201,7 +201,7 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
                 {% for theme, stats in quiz_results.avg_elapsed_time_by_theme %}
                     {% set _percent = (20 + 80*(stats.avg_elapsed_time-_min)/(_max-_min))|number_format %}
                     <div class="row-fluid">
-                        <div class="span2">{{ macros.theme_label(theme, quiz_results.total.questions_by_theme[theme]) }}</div>
+                        <div class="span2 theme">{{ macros.theme_label(theme, quiz_results.total.questions_by_theme[theme]) }}</div>
                         <div class="span10">
                             <div class="progress">
                                 <div class="bar bar-purple" style="width: {{ _percent }}%">
@@ -241,7 +241,7 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
             {% else %}
                 {% for theme, stats in quiz_results.answer_types_by_theme %}
                     <div class="row-fluid">
-                        <div class="span2">{{ macros.theme_label(theme, quiz_results.total.questions_by_theme[theme]) }}</div>
+                        <div class="span2 theme">{{ macros.theme_label(theme, quiz_results.total.questions_by_theme[theme]) }}</div>
                         <div class="span10">
                             {{ macros.categorization(stats, quiz_results.total.questions_by_theme[theme]) }}
                         </div>
