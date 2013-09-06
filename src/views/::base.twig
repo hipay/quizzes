@@ -25,10 +25,11 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
             <title>{% block title %}QCM{% if subtitle is defined %} – {{ subtitle }}{% endif %}{% endblock %}</title>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link href="{{ app.request.basepath }}/css/bootstrap.css" rel="stylesheet" media="screen">
-            <link href="{{ app.request.basepath }}/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
-            <link href="{{ app.request.basepath }}/css/docs.css" rel="stylesheet" media="screen">
-            <link href="{{ app.request.basepath }}/css/qcm.css" rel="stylesheet" media="screen">
+            <link href="{{ app.request.basepath }}/css/bootstrap.css" media="screen" rel="stylesheet">
+            <link href="{{ app.request.basepath }}/css/bootstrap-responsive.css" media="screen,print" rel="stylesheet">
+            <link href="{{ app.request.basepath }}/css/docs.css" media="screen,print" rel="stylesheet">
+            <link href="{{ app.request.basepath }}/css/qcm.css" media="screen,print" rel="stylesheet">
+            <link href="{{ app.request.basepath }}/css/qcm-print.css" media="print" rel="stylesheet">
         {% endblock %}
     </head>
     <body>

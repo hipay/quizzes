@@ -192,7 +192,8 @@ div.qcm div.row-fluid div.alert-score {
 div.qcm div.row-fluid [class*="span"] {
     min-height: 1px;
 }
-.progress .bar-grey {
+div.theme em {white-space: nowrap;}
+.progress .bar.bar-grey {
   background-image: -moz-linear-gradient(top, #ddd, #bbb);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ddd), to(#bbb));
   background-image: -webkit-linear-gradient(top, #ddd, #bbb);
@@ -201,7 +202,7 @@ div.qcm div.row-fluid [class*="span"] {
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffddd', endColorstr='#ffbbb', GradientType=0);
 }
-.progress .bar-black {
+.progress .bar.bar-black {
   background-image: -moz-linear-gradient(top, #474949, #333);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#474949), to(#333));
   background-image: -webkit-linear-gradient(top, #474949, #333);
@@ -210,7 +211,7 @@ div.qcm div.row-fluid [class*="span"] {
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff474949', endColorstr='#ff333', GradientType=0);
 }
-.progress .bar-light-green {
+.progress .bar.bar-light-green {
   background-image: -moz-linear-gradient(top, #A5EBA5, #84D684);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#A5EBA5), to(#84D684));
   background-image: -webkit-linear-gradient(top, #A5EBA5, #84D684);
@@ -219,7 +220,7 @@ div.qcm div.row-fluid [class*="span"] {
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffA5EBA5', endColorstr='#ff84D684', GradientType=0);
 }
-.progress .bar-yellow {
+.progress .bar.bar-yellow {
   background-image: -moz-linear-gradient(top, #F5E61D, #E0D31B);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#F5E61D), to(#E0D31B));
   background-image: -webkit-linear-gradient(top, #F5E61D, #E0D31B);
@@ -228,7 +229,7 @@ div.qcm div.row-fluid [class*="span"] {
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffF5E61D', endColorstr='#ffE0D31B', GradientType=0);
 }
-.progress .bar-purple {
+.progress .bar.bar-purple {
   background-image: -moz-linear-gradient(top, #C7A6DD, #BA85DD);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#C7A6DD), to(#BA85DD));
   background-image: -webkit-linear-gradient(top, #C7A6DD, #BA85DD);
@@ -246,7 +247,7 @@ div.qcm div.row-fluid .legend div.progress {
     float: none;
     width: 20px;
 }
-.legend ul {list-style-type: none; margin: 0;}
+.legend ul {list-style-type: none; margin: 0; overflow: hidden;}
 .legend ul li { float:left; margin-right: 12px;}
 .legend ul li small {
     display: inline-block;
