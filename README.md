@@ -19,6 +19,7 @@ La plate-forme de quizzes permet :
   * de proposer des sessions mélangeant plusieurs questionnaires,
   * de réaliser des sessions ne portant que sur une partie des questions d'un ou plusieurs questionnaires, questions tirées aléatoirement,
   * une grande facilité d'ajout de questionnaires, coloration syntaxique des bouts de code pouvant émailler les questions et propositions de réponse.
+  * une impression du résultat des session
 
 Dans un questionnaire :
 
