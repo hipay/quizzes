@@ -4,6 +4,9 @@
 
 Plate-forme de quizzes à choix multiples (QCM) avec interface d'analyse des résultats.
 
+*Technologies* : [Silex](http://silex.sensiolabs.org/), [Twig](http://twig.sensiolabs.org/), 
+[Bootstrap](http://getbootstrap.com/2.3.2/), [Composer](http://getcomposer.org), aucune base de données.
+
 ## Description
 
 ### Deux zones

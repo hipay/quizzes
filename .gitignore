@@ -5,5 +5,5 @@
 /resources/quizzes/src
 /vendor
 /conf/qcm.php
-encrypt.php
+decrypt.php
 /.twgit
