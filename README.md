@@ -30,7 +30,7 @@ Dans un questionnaire :
   * thèmes, questions et propositions arrivent dans un ordre différent à chaque session,
   * le temps restant est affiché constamment,
   * pas moyen de revenir sur une question précédente (page précédente sans effet),
-  * le barème est optimal lorsque toute question admet au moins une bonne proposition et au moins une mauvaise proposition.
+  * le barème est optimal lorsque toute question admet **au moins une bonne proposition** et **au moins une mauvaise proposition**.
 
 ### Barème
 
@@ -101,7 +101,8 @@ $ sudo a2enmod rewrite
 Exemple de *virtual host* :
 
 ```bash
-$ cat /etc/apache2/sites-enabled/quizzes.xyz.com 
+$ cat /etc/apache2/sites-enabled/quizzes.xyz.com
+
 <Directory /var/www/quizzes/web>
     Options -Indexes
     AllowOverride FileInfo
@@ -133,11 +134,20 @@ Pour mettre à jour des comptes d'administration modifier la clé `'admin_accoun
 
 #### Mise à jour des questionnaires
 
-Les questionnaires sont cryptés sur le serveur web.
+Les questionnaires sont cryptés en AES-256 sur le serveur web.
 
 Lors d'une mise à jour des questionnaires exécuter le script `/src/encrypt.php` afin de régénérer 
-les `/resources/quizzes/*.php` à partir des `/resources/quizzes/src/*.php`.
-Le répertoire `/resources/quizzes/src` n'est alors plus nécessaire.
+les `/resources/quizzes/*.enc.php` à partir des `/resources/quizzes/src/*.php`.
+Le répertoire `/resources/quizzes/src` n'est alors plus nécessaire, ainsi que `/src/encrypt.php`.
+
+**Des exemples de questionnaires sont disponibles dans `/resources/quizzes/examples` :**
+
+  * 2 mini questionnaires intitulés « *Additions* » et « *Multiplications* »,
+  * 1 questionnaire « *JavaScript* » d'une seule question mais illustrant l'insertion de code avec coloration syntaxique, 
+  * 1 questionnaire nommé « *Toutes les questions !* » expliquant comment déclarer un questionnaire comme l'union d'autres questionnaires
+  * et 1 questionnaire intitulé « *Un petit peu de tout…* » piochant au hasard un nombre défini de question parmi celles des autres questionnaires.
+
+Les copier dans `/resources/quizzes/src` pour les utiliser dans l'application…
 
 ## Captures d'écran
 
