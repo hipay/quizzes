@@ -37,9 +37,11 @@ use Symfony\Component\Form\FormView;
  * Contrôleur de la partie utilisateur du site.
  *
  * Copyright (c) 2013 Hi-Media
+ * Copyright (c) 2013 Geoffroy Aubry <gaubry@hi-media.com>
  * Licensed under the GNU General Public License v3 (LGPL version 3).
  *
  * @copyright 2013 Hi-Media
+ * @copyright 2013 Geoffroy Aubry <gaubry@hi-media.com>
  * @license http://www.gnu.org/licenses/gpl.html
  */
 class User implements ControllerProviderInterface
