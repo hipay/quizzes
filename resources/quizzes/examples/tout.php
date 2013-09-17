@@ -8,7 +8,8 @@ return array(
     'meta' => array(
         'title' => 'Toutes les questions !',
         'time_limit' => 5*20,
-        'max_nb_questions' => 0
+        'max_nb_questions' => 0,
+        'status' => 'available' // {'available', 'deactivated', 'hidden'}
     ),
     'questions' => array_merge(
         $aAdditions['questions'],

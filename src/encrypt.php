@@ -51,7 +51,8 @@ foreach ($oFinder as $oFile) {
             'meta' => array(
                 'title' => $aStats['title'],
                 'time_limit' => $aStats['time_limit'],
-                'max_nb_questions' => $aStats['nb_questions']
+                'max_nb_questions' => $aStats['nb_questions'],
+                'status' => $aStats['status']
             ),
             'questions' => $aQuestions
         );

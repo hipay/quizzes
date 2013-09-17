@@ -346,6 +346,12 @@ class User implements ControllerProviderInterface
         $oQuiz = $app['session']->get('quiz');
         $aQuizStats = $oQuiz->getStats();
 
+        if ($aQuizStats['status'] != 'available') {
+            $app['session']->set('state', 'need-quiz');
+            $subRequest = Request::create('/', 'GET');
+            return $app->handle($subRequest, HttpKernelInterface::SUB_REQUEST, false);
+        }
+
         if ('POST' == $request->getMethod()) {
             $form->bind($request);
             if ($form->isValid()) {
