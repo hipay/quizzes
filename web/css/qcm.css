@@ -29,6 +29,9 @@ div.qcm {
 div.qcm form label {
     margin-bottom: 10px;
 }
+div.qcm form label.deactivated {
+    cursor: default;
+}
 div.qcm form.sessions {
     margin: 0;
 }
@@ -151,6 +154,10 @@ div.qcm div.quizzes h5 {
     font-size: 16px;
     color: #C72B24;
     font-weight: normal;
+}
+div.qcm div.quizzes label.deactivated h5 {
+    color: #F07B76;
+    font-style: italic;
 }
 div.qcm div.quizzes blockquote {
     margin: 6px 0 20px 0;

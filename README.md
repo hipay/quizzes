@@ -7,12 +7,22 @@ Plate-forme de quizzes à choix multiples (QCM) avec interface d'analyse des ré
 *Technologies* : [Silex](http://silex.sensiolabs.org/), [Twig](http://twig.sensiolabs.org/), 
 [Bootstrap](http://getbootstrap.com/2.3.2/), [Composer](http://getcomposer.org), aucune base de données.
 
+## Sommaire
+
+  * [Description](#description)
+  * [Installation et configuration](#installation-et-configuration)
+  * [Captures d'écran](#captures-d%C3%A9cran)
+  * [Copyrights & licensing](#copyrights--licensing)
+  * [Change log](#change-log)
+  * [Git branching model](#git-branching-model)
+  
 ## Description
 
 ### Deux zones
 
   * L'une publique pour choisir un questionnaire, le dérouler et obtenir score et statistiques.
-  * L'autre avec mot de passe pour accéder aux sessions passées, à leur score et statistiques et à leur correction détaillée.
+  * L'autre avec mot de passe pour accéder aux sessions passées, à leur score et statistiques 
+    et à leur correction détaillée.
 
 ### Questionnaires
 
@@ -20,17 +30,23 @@ La plate-forme de quizzes permet :
 
   * d'héberger et proposer de multiples questionnaires,
   * de proposer des sessions mélangeant plusieurs questionnaires,
-  * de réaliser des sessions ne portant que sur une partie des questions d'un ou plusieurs questionnaires, questions tirées aléatoirement,
-  * une grande facilité d'ajout de questionnaires, coloration syntaxique des bouts de code pouvant émailler les questions et propositions de réponse.
-  * une impression du résultat des session
+  * de réaliser des sessions ne portant que sur une partie des questions d'un ou plusieurs questionnaires, 
+    questions tirées aléatoirement,
+  * de désactiver voire masquer des questionnaires tout en continuant de les inclure dans d'autres questionnaires,
+  * une grande facilité d'ajout de questionnaires, coloration syntaxique des bouts de code pouvant émailler 
+    les questions et propositions de réponse,
+  * une impression du résultat des sessions.
 
 Dans un questionnaire :
 
-  * chaque question appartient à un thème afin de faciliter l'analyse des réponses, mais cette information ne transparaît pas forcément dans l'énoncé des questions (un seul thème est retenu par question par souci de simplicité),
+  * chaque question appartient à un thème afin de faciliter l'analyse des réponses, mais cette information 
+    ne transparaît pas forcément dans l'énoncé des questions 
+    (un seul thème est retenu par question par souci de simplicité),
   * thèmes, questions et propositions arrivent dans un ordre différent à chaque session,
   * le temps restant est affiché constamment,
   * pas moyen de revenir sur une question précédente (page précédente sans effet),
-  * le barème est optimal lorsque toute question admet **au moins une bonne proposition** et **au moins une mauvaise proposition**.
+  * le barème est optimal lorsque toute question admet **au moins une bonne proposition** 
+    et **au moins une mauvaise proposition**.
 
 ### Barème
 
@@ -130,7 +146,8 @@ Initialiser le fichier de configuration en dupliquant `conf/qcm-dist.php` et en 
 $ cp '/var/www/quizzes/conf/qcm-dist.php' '/var/www/quizzes/conf/qcm.php'
 ```
 
-Pour mettre à jour des comptes d'administration modifier la clé `'admin_accounts'`, tableau au format `login => md5(password)`.
+Pour mettre à jour des comptes d'administration modifier la clé `'admin_accounts'`, 
+tableau au format `login => md5(password)`.
 
 #### Mise à jour des questionnaires
 
@@ -143,9 +160,12 @@ Le répertoire `/resources/quizzes/src` n'est alors plus nécessaire, ainsi que 
 **Des exemples de questionnaires sont disponibles dans `/resources/quizzes/examples` :**
 
   * 2 mini questionnaires intitulés « *Additions* » et « *Multiplications* »,
-  * 1 questionnaire « *JavaScript* » d'une seule question mais illustrant l'insertion de code avec coloration syntaxique, 
-  * 1 questionnaire nommé « *Toutes les questions !* » expliquant comment déclarer un questionnaire comme l'union d'autres questionnaires
-  * et 1 questionnaire intitulé « *Un petit peu de tout…* » piochant au hasard un nombre défini de question parmi celles des autres questionnaires.
+  * 1 questionnaire « *JavaScript* » d'une seule question mais illustrant l'insertion de code 
+    avec coloration syntaxique,
+  * 1 questionnaire nommé « *Toutes les questions !* » expliquant comment déclarer un questionnaire 
+    comme l'union d'autres questionnaires
+  * et 1 questionnaire intitulé « *Un petit peu de tout…* » piochant au hasard un nombre défini de question 
+    parmi celles des autres questionnaires.
 
 Les copier dans `/resources/quizzes/src` pour les utiliser dans l'application…
 
@@ -231,4 +251,5 @@ See [LICENSE](LICENSE) file for details.
 See [CHANGELOG](CHANGELOG.md) file for details.
 
 ## Git branching model
-The git branching model used for development is the one described and assisted by `twgit` tool: [https://github.com/Twenga/twgit](https://github.com/Twenga/twgit).
+The git branching model used for development is the one described and assisted 
+by `twgit` tool: [https://github.com/Twenga/twgit](https://github.com/Twenga/twgit).

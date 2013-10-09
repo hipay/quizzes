@@ -4,7 +4,8 @@ return array(
     'meta' => array(
         'title' => 'Multiplications',
         'time_limit' => 2*20,
-        'max_nb_questions' => 0
+        'max_nb_questions' => 0,
+        'status' => 'available' // {'available', 'deactivated', 'hidden'}
     ),
     'questions' => array(
         array(

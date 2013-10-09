@@ -1,4 +1,7 @@
 {#
+Copyright (c) 2013 Hi-Media
+Copyright (c) 2013 Geoffroy Aubry <gaubry@hi-media.com>
+
 This file is part of Hi-Media Quizzes.
 
 Hi-Media Quizzes is free software: you can redistribute it and/or modify
@@ -32,18 +35,25 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
                     <div class="quizzes">
                         {% for choice, quiz_stats in quizzes %}
                             {% spaceless %}
-                            <label class="radio">
-                                <input
-                                    type="radio" name="form[quizzes]"
-                                    value="{{ choice }}"
-{#                                     {% if choice == quizzes|keys|first %} checked="checked"{% endif %}#}
-                                >
-                                <h5>{{ quiz_stats.title }}</h5>
-                                <blockquote>
-                                    <p>{{ block('quiz_description_nb_questions') }},</p>
-                                    <p>{{ block('quiz_description_themes') }}.</p>
-                                </blockquote>
-                            </label>
+                            {% if quiz_stats.status != 'hidden' %}
+                                {% if quiz_stats.status == 'deactivated' %}
+                                    {% set class, title, value = ' deactivated', 'Questionnaire désactivé.', '' %}
+                                {% else %}
+                                    {% set class, title, value = '', 'Démarrer ce questionnaire…', choice %}
+                                {% endif %}
+                                <label class="radio{{ class }}" title="{{ title }}">
+                                    <input
+                                        type="radio" name="form[quizzes]"
+                                        value="{{ value }}"
+                                        {{ quiz_stats.status == 'deactivated' ? ' disabled="disabled"' }}
+                                    >
+                                    <h5>{{ quiz_stats.title }}</h5>
+                                    <blockquote>
+                                        <p>{{ block('quiz_description_nb_questions') }},</p>
+                                        <p>{{ block('quiz_description_themes') }}.</p>
+                                    </blockquote>
+                                </label>
+                            {% endif %}
                             {% endspaceless %}
                         {% endfor %}
                     </div>

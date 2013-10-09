@@ -6,7 +6,8 @@ return array(
     'meta' => array(
         'title' => 'Un petit peu de tout…',
         'time_limit' => 2*20,
-        'max_nb_questions' => 2
+        'max_nb_questions' => 2,
+        'status' => 'available' // {'available', 'deactivated', 'hidden'}
     ),
     'questions' => $aAll['questions']
 );

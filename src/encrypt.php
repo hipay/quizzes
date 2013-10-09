@@ -1,6 +1,9 @@
 <?php
 
-/*
+/**
+ * Copyright (c) 2013 Hi-Media
+ * Copyright (c) 2013 Geoffroy Aubry <gaubry@hi-media.com>
+ *
  * This file is part of Hi-Media Quizzes.
  *
  * Hi-Media Quizzes is free software: you can redistribute it and/or modify
@@ -15,6 +18,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @copyright 2013 Hi-Media
+ * @copyright 2013 Geoffroy Aubry <gaubry@hi-media.com>
+ * @license http://www.apache.org/licenses/LICENSE-2.0
  */
 
 use Himedia\QCM\Quiz;
@@ -51,7 +58,8 @@ foreach ($oFinder as $oFile) {
             'meta' => array(
                 'title' => $aStats['title'],
                 'time_limit' => $aStats['time_limit'],
-                'max_nb_questions' => $aStats['nb_questions']
+                'max_nb_questions' => $aStats['nb_questions'],
+                'status' => $aStats['status']
             ),
             'questions' => $aQuestions
         );
