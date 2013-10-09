@@ -20,7 +20,8 @@ return array(
         'mutt_to' => 'admin@xyz.com',
         'mutt_cfg' => "set charset='utf-8'; set copy=no; set content_type=text/html; my_hdr From: Quizzes <quizzes@xyz.com>; my_hdr Reply-To: Admin <admin@xyz.com>",
         'mutt_cmd' => 'mutt -e "%1$s" -s "%2$s" -- %3$s' . " <<EOT\n%4\$s\nEOT\n",
-        'crypt_salt' => 'salt'
+        'crypt_salt' => 'salt',
+        'nb_sessions_per_page' => 30
     ),
 
     'GAubry\ErrorHandler'     => array(

@@ -39,10 +39,16 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class Admin implements ControllerProviderInterface
 {
+    /**
+     * @var \Symfony\Component\Finder\Finder
+     */
+    private $oSessionFinder = null;
+
     public function connect (Application $app)
     {
         $oController = $app['controllers_factory'];
         $oController->match('/sessions', 'Himedia\QCM\Controllers\Admin::sessions')->bind('admin_sessions');
+        $oController->get('/sessions/offset/{iOffset}', 'Himedia\QCM\Controllers\Admin::sessionsWithOffset');
         $oController->get('/sessions/{sSessionId}', 'Himedia\QCM\Controllers\Admin::sessionResult');
         $oController->delete('/sessions/{sSessionId}', 'Himedia\QCM\Controllers\Admin::deleteSession');
         $oController->get('/sessions/{sSessionId}/{sThemeId}', 'Himedia\QCM\Controllers\Admin::themeResult');
@@ -52,19 +58,41 @@ class Admin implements ControllerProviderInterface
     public function sessions (Application $app, Request $request)
     {
         $sDir = $app['config']['Himedia\QCM']['dir']['sessions'];
-        $aSessions = $this->getAllSessions($sDir);
+        $iNbSessionsPerPage = $app['config']['Himedia\QCM']['nb_sessions_per_page'];
+        $iTotalNbSessions = $this->getSessionFinder($sDir)->count();
+        $aSessions = $this->getPageOfSessions($sDir, 0, $iNbSessionsPerPage);
         $aObfuscatedSessions = Obfuscator::obfuscateKeys($aSessions, $app['session']->get('seed'));
 
         return $app['twig']->render('admin-sessions.twig', array(
-            'sessions' => $aObfuscatedSessions
+            'sessions' => $aObfuscatedSessions,
+            'nb_listed_sessions' => $iNbSessionsPerPage,
+            'total_nb_sessions' => $iTotalNbSessions
+        ));
+    }
+
+    public function sessionsWithOffset (Application $app, Request $request, $iOffset)
+    {
+        $iOffset = (int)$iOffset;
+        if ($iOffset < 0) {
+            $iOffset = 0;
+        }
+
+        $sDir = $app['config']['Himedia\QCM']['dir']['sessions'];
+        $iNbSessionsPerPage = $app['config']['Himedia\QCM']['nb_sessions_per_page'];
+        $aSessions = $this->getPageOfSessions($sDir, $iOffset, $iNbSessionsPerPage);
+        $aObfuscatedSessions = Obfuscator::obfuscateKeys($aSessions, $app['session']->get('seed'));
+
+        return $app['twig']->render('admin-sessions-rows.twig', array(
+            'sessions' => $aObfuscatedSessions,
+            'session_start_numbering' => $iOffset + 1
         ));
     }
 
     public function deleteSession (Application $app, Request $request, $sSessionId)
     {
         $sDir = $app['config']['Himedia\QCM']['dir']['sessions'];
-        $aSessions = $this->getAllSessions($sDir);
-        $sSessionPath = Obfuscator::unobfuscateKey($sSessionId, $aSessions, $app['session']->get('seed'));
+        $aSessionsPath = $this->getAllSessionsPath($sDir);
+        $sSessionPath = Obfuscator::unobfuscateKey($sSessionId, array_flip($aSessionsPath), $app['session']->get('seed'));
         unlink($sSessionPath);
         return $app->redirect('/admin/sessions');
     }
@@ -72,12 +100,9 @@ class Admin implements ControllerProviderInterface
     public function sessionResult (Application $app, Request $request, $sSessionId)
     {
         $sDir = $app['config']['Himedia\QCM']['dir']['sessions'];
-        $aSessions = $this->getAllSessions($sDir);
-        $sSessionPath = Obfuscator::unobfuscateKey($sSessionId, $aSessions, $app['session']->get('seed'));
+        $aSessionsPath = $this->getAllSessionsPath($sDir);
+        $sSessionPath = Obfuscator::unobfuscateKey($sSessionId, array_flip($aSessionsPath), $app['session']->get('seed'));
         $aSession = $this->loadSession($sSessionPath);
-
-//         return $app['twig']->render('admin-results.twig', array(
-//         ));
 
         $oQuiz = $aSession['quiz'];
         $aQuizStats = $oQuiz->getStats();
@@ -101,8 +126,8 @@ class Admin implements ControllerProviderInterface
     public function themeResult (Application $app, Request $request, $sSessionId, $sThemeId)
     {
         $sDir = $app['config']['Himedia\QCM']['dir']['sessions'];
-        $aSessions = $this->getAllSessions($sDir);
-        $sSessionPath = Obfuscator::unobfuscateKey($sSessionId, $aSessions, $app['session']->get('seed'));
+        $aSessionsPath = $this->getAllSessionsPath($sDir);
+        $sSessionPath = Obfuscator::unobfuscateKey($sSessionId, array_flip($aSessionsPath), $app['session']->get('seed'));
         $aSession = $this->loadSession($sSessionPath);
 
         $oQuiz = $aSession['quiz'];
@@ -151,18 +176,49 @@ class Admin implements ControllerProviderInterface
         return new Response($response, 200, $app['cache.defaults']);
     }
 
-    private function getAllSessions ($sDirectory)
+    private function getSessionFinder ($sDirectory)
     {
-        $aSessions = array();
-        $oFinder = new Finder();
-        $oFinder->files()->in($sDirectory)->name('/\d{8}-\d{6}_[a-z0-9]{32}/')->depth(0)->date('since 30 days ago');
+        if ($this->oSessionFinder === null) {
+            $oFinder = new Finder();
+            $this->oSessionFinder = $oFinder->files()->in($sDirectory)->name('/\d{8}-\d{6}_[a-z0-9]{32}/')->depth(0);
+        }
+        return $this->oSessionFinder;
+    }
+
+    private function getAllSessionsPath ($sDirectory)
+    {
+        $aSessionsPath = array();
+        $oFinder = $this->getSessionFinder($sDirectory);
+
         /* @var $oFile \Symfony\Component\Finder\SplFileInfo */
         foreach ($oFinder as $oFile) {
+            $sPath = $oFile->getRealpath();
+            $aSessionsPath[] = $sPath;
+        }
+        return $aSessionsPath;
+    }
+
+    private function getPageOfSessions ($sDirectory, $iOffset, $iNbPerPage)
+    {
+        $aSessions = array();
+        $oFinder = $this->getSessionFinder($sDirectory);
+        $oFinder->sort(function (\SplFileInfo $a, \SplFileInfo $b) {
+            return $a->getMTime() <= $b->getMTime();
+        });
+
+        $i = 0;
+        /* @var $oFile \Symfony\Component\Finder\SplFileInfo */
+        foreach ($oFinder as $oFile) {
+            $i++;
+            if ($i <= $iOffset) {
+                continue;
+            } elseif ($i > $iOffset + $iNbPerPage) {
+                break;
+            }
             $sPath = $oFile->getRealpath();
             $aSummary = $this->loadSummaryOfSession($sPath);
             $aSessions[$sPath] = $aSummary;
         }
-        krsort($aSessions);
         return $aSessions;
     }
 

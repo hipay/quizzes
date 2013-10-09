@@ -120,3 +120,54 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
         </ul>
     </div>
 {% endmacro %}
+
+{% macro sessions_rows(sessions, start_numbering) %}
+    {% set i = start_numbering-1 %}
+    {% for key, session in sessions %}
+        {% set i = i+1 %}
+        <tr>
+            <td><a href="/admin/sessions/{{ key }}" title="Voir les résultats détaillés"><i class="icon-zoom-in"></i></a></td>
+            <td title="{{ session.filename }}">{{ i }}</td>
+
+            {% set title = session.ip is defined and session.ip is not empty ? session.ip : '' %}
+            {% set title = title is not empty and session.host_name is defined and title != session.host_name ? title ~ ', ' ~ session.host_name : title %}
+            <td title="{{ title }}">{{ session.candidate }}</td>
+
+            <td>{{ session.quiz_stats.title }}</td>
+
+            {% if session.state == 'quiz-in-progress' %}
+                {% if date(session.timelimit) < date() %}
+                    {% set status_msg = 'évaporé, ' ~ session.result.total.total_nb_questions ~ '/' ~ session.quiz_stats.nb_questions ~ ' ?' %}
+                    <td class="text-warning"><i class="icon-time"></i> {{ status_msg }}</td>
+                {% else %}
+                    {% set status_msg = 'en cours, ' ~ session.result.total.total_nb_questions ~ '/' ~ session.quiz_stats.nb_questions %}
+                    <td class="text-info"><i class="icon-refresh"></i> {{ status_msg }}</td>
+                {% endif %}
+            {% else %}
+                {% set status_msg = 'terminé' %}
+                <td><i class="icon-ok"></i> {{ status_msg }}</td>
+            {% endif %}
+
+            <td>{{ session.timelimit|date('Y-m-d H:i:s', 'Europe/Paris') }}</td>
+
+            {% if session.result.total.total_nb_questions == 0 %}
+                <td class="text-info" title="encore aucune question répondue">NA</td>
+            {% else %}
+                {% set score = session.result.total.score|score_format(1) ~ ' points sur ' ~ session.result.total.total_nb_questions %}
+                {% set score100 = (session.result.total.score*100/session.result.total.total_nb_questions)|number_format %}
+                {% if session.state == 'quiz-in-progress' %}
+                    <td class="text-info" title="{{ score }}, score provisoire ne tenant compte que des questions affichées">{{ score100 }}</td>
+                {% else %}
+                    <td title="{{ score }}">{{ score100 }}</td>
+                {% endif %}
+            {% endif %}
+
+            <td>
+                <form action="/admin/sessions/{{ key }}" method="post" class="sessions">
+                    <input type="hidden" id="_method" name="_method" value="DELETE" />
+                    <input type="submit" class="icon-trash" value="" title="Supprimer définitivement cette session" />
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+{% endmacro %}
