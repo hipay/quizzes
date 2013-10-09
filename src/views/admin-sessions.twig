@@ -18,11 +18,6 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
 {% extends "::base.twig" %}
 {% import "::macros-stats.twig" as macros %}
 
-{% block head %}
-    {{ parent() }}
-    <meta http-equiv="refresh" content="10" />
-{% endblock %}
-
 {% block content %}
     {{ parent() }}
     <div class="row">
@@ -31,6 +26,11 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
                 Sessions
                 <div class="pull-right" title="Se déconnecter de l'interface d'administration"><a href="{{ path('admin_logout') }}"><i class="icon-eye-close"></i> se déconnecter</a></div>
             </h4>
+
+            <p>
+                <small>Garder la barre de défilement bloquée en haut
+                pour un rafraîchissement automatique toutes les 10 secondes.</small>
+            </p>
 
             <table id="sessions" class="table table-condensed table-striped table-hover">
                 <thead>
@@ -62,6 +62,8 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
     {{ parent() }}
     <script>
         $(document).ready(function(){
+            setTimeout('reload()', 10000);
+
             var nb_listed_sessions = $('#sessions tbody tr').length;
             var total_nb_sessions = {{total_nb_sessions}};
             var load = false;
@@ -89,5 +91,13 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
                 }
             });
         });
+
+        function reload () {
+            if ($(window).scrollTop() == 0) {
+                window.location.reload();
+            } else {
+                setTimeout('reload()', 10000);
+            }
+        }
     </script>
 {% endblock %}
