@@ -4,15 +4,25 @@
 
 Plate-forme de quizzes à choix multiples (QCM) avec interface d'analyse des résultats.
 
-*Technologies* : [Silex](http://silex.sensiolabs.org/), [Twig](http://twig.sensiolabs.org/), 
+*Technologies* : [Silex](http://silex.sensiolabs.org/), [Twig](http://twig.sensiolabs.org/),
 [Bootstrap](http://getbootstrap.com/2.3.2/), [Composer](http://getcomposer.org), aucune base de données.
+
+## Sommaire
+
+  * [Description](#description)
+  * [Installation et configuration](#installation-et-configuration)
+  * [Captures d'écran](#captures-d%C3%A9cran)
+  * [Copyrights & licensing](#copyrights--licensing)
+  * [Change log](#change-log)
+  * [Git branching model](#git-branching-model)
 
 ## Description
 
 ### Deux zones
 
   * L'une publique pour choisir un questionnaire, le dérouler et obtenir score et statistiques.
-  * L'autre avec mot de passe pour accéder aux sessions passées, à leur score et statistiques et à leur correction détaillée.
+  * L'autre avec mot de passe pour accéder aux sessions passées, à leur score et statistiques,
+    à leur correction détaillée et au suivi temps réel des sessions en cours.
 
 ### Questionnaires
 
@@ -20,17 +30,23 @@ La plate-forme de quizzes permet :
 
   * d'héberger et proposer de multiples questionnaires,
   * de proposer des sessions mélangeant plusieurs questionnaires,
-  * de réaliser des sessions ne portant que sur une partie des questions d'un ou plusieurs questionnaires, questions tirées aléatoirement,
-  * une grande facilité d'ajout de questionnaires, coloration syntaxique des bouts de code pouvant émailler les questions et propositions de réponse.
-  * une impression du résultat des session
+  * de réaliser des sessions ne portant que sur une partie des questions d'un ou plusieurs questionnaires,
+    questions tirées aléatoirement,
+  * de désactiver voire masquer des questionnaires tout en continuant de les inclure dans d'autres questionnaires,
+  * une grande facilité d'ajout de questionnaires, coloration syntaxique des bouts de code pouvant émailler
+    les questions et propositions de réponse,
+  * une impression du résultat des sessions.
 
 Dans un questionnaire :
 
-  * chaque question appartient à un thème afin de faciliter l'analyse des réponses, mais cette information ne transparaît pas forcément dans l'énoncé des questions (un seul thème est retenu par question par souci de simplicité),
+  * chaque question appartient à un thème afin de faciliter l'analyse des réponses, mais cette information
+    ne transparaît pas forcément dans l'énoncé des questions
+    (un seul thème est retenu par question par souci de simplicité),
   * thèmes, questions et propositions arrivent dans un ordre différent à chaque session,
   * le temps restant est affiché constamment,
   * pas moyen de revenir sur une question précédente (page précédente sans effet),
-  * le barème est optimal lorsque toute question admet **au moins une bonne proposition** et **au moins une mauvaise proposition**.
+  * le barème est optimal lorsque toute question admet **au moins une bonne proposition**
+    et **au moins une mauvaise proposition**.
 
 ### Barème
 
@@ -39,16 +55,16 @@ Le barème favorise l'absence de réponse à la mauvaise réponse.
 
 Ainsi de manière générale, si une question possède `P` propositions de réponse, alors :
 
-  * chaque question nécessite de cocher `1` à `P-1` cases et rapporte de `-1` à `1` point, `0` si non répondue. 
-  * si une question requiert `N` cases cochées pour la bonne réponse, alors : 
-     * chaque case bien cochée rapporte `1/N` point, 
+  * chaque question nécessite de cocher `1` à `P-1` cases et rapporte de `-1` à `1` point, `0` si non répondue.
+  * si une question requiert `N` cases cochées pour la bonne réponse, alors :
+     * chaque case bien cochée rapporte `1/N` point,
      * chaque case mal cochée enlève `1/(P-N)` point.
-     
+
 **Il en découle que les trois stratégies suivantes aboutissent à un score nul :**
-  * cocher toutes les cases, 
+  * cocher toutes les cases,
   * n'en cocher aucune
   * et statistiquement cocher au hasard `1` à `P-1` cases.
-  
+
 ## Installation et configuration
 
 ### Git clone
@@ -63,7 +79,7 @@ $ git clone git@github.com:Hi-Media/Quizzes.git /var/www/quizzes
 
 #### Composer
 
-La plupart des dépendences sont gérées par [composer](http://getcomposer.org). 
+La plupart des dépendences sont gérées par [composer](http://getcomposer.org).
 Lancer l'une des commandes suivantes :
 
 ```bash
@@ -130,22 +146,26 @@ Initialiser le fichier de configuration en dupliquant `conf/qcm-dist.php` et en 
 $ cp '/var/www/quizzes/conf/qcm-dist.php' '/var/www/quizzes/conf/qcm.php'
 ```
 
-Pour mettre à jour des comptes d'administration modifier la clé `'admin_accounts'`, tableau au format `login => md5(password)`.
+Pour mettre à jour des comptes d'administration modifier la clé `'admin_accounts'`,
+tableau au format `login => md5(password)`.
 
 #### Mise à jour des questionnaires
 
 Les questionnaires sont cryptés en AES-256 sur le serveur web.
 
-Lors d'une mise à jour des questionnaires exécuter le script `/src/encrypt.php` afin de régénérer 
+Lors d'une mise à jour des questionnaires exécuter le script `/src/encrypt.php` afin de régénérer
 les `/resources/quizzes/*.enc.php` à partir des `/resources/quizzes/src/*.php`.
 Le répertoire `/resources/quizzes/src` n'est alors plus nécessaire, ainsi que `/src/encrypt.php`.
 
 **Des exemples de questionnaires sont disponibles dans `/resources/quizzes/examples` :**
 
   * 2 mini questionnaires intitulés « *Additions* » et « *Multiplications* »,
-  * 1 questionnaire « *JavaScript* » d'une seule question mais illustrant l'insertion de code avec coloration syntaxique, 
-  * 1 questionnaire nommé « *Toutes les questions !* » expliquant comment déclarer un questionnaire comme l'union d'autres questionnaires
-  * et 1 questionnaire intitulé « *Un petit peu de tout…* » piochant au hasard un nombre défini de question parmi celles des autres questionnaires.
+  * 1 questionnaire « *JavaScript* » d'une seule question mais illustrant l'insertion de code
+    avec coloration syntaxique,
+  * 1 questionnaire nommé « *Toutes les questions !* » expliquant comment déclarer un questionnaire
+    comme l'union d'autres questionnaires
+  * et 1 questionnaire intitulé « *Un petit peu de tout…* » piochant au hasard un nombre défini de question
+    parmi celles des autres questionnaires.
 
 Les copier dans `/resources/quizzes/src` pour les utiliser dans l'application…
 
@@ -204,7 +224,8 @@ return array(
     'meta' => array(
         'title' => 'POO et design patterns',
         'time_limit' => 15*20,
-        'max_nb_questions' => 0
+        'max_nb_questions' => 0,
+        'status' => 'available' // {'available', 'deactivated', 'hidden'}
     ),
     'questions' => array(
         array(
@@ -231,4 +252,5 @@ See [LICENSE](LICENSE) file for details.
 See [CHANGELOG](CHANGELOG.md) file for details.
 
 ## Git branching model
-The git branching model used for development is the one described and assisted by `twgit` tool: [https://github.com/Twenga/twgit](https://github.com/Twenga/twgit).
+The git branching model used for development is the one described and assisted
+by `twgit` tool: [https://github.com/Twenga/twgit](https://github.com/Twenga/twgit).

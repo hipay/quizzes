@@ -1,4 +1,7 @@
 {#
+Copyright (c) 2013 Hi-Media
+Copyright (c) 2013 Geoffroy Aubry <gaubry@hi-media.com>
+
 This file is part of Hi-Media Quizzes.
 
 Hi-Media Quizzes is free software: you can redistribute it and/or modify
@@ -16,11 +19,7 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
 #}
 
 {% extends "::base.twig" %}
-
-{% block head %}
-    {{ parent() }}
-    <meta http-equiv="refresh" content="10" />
-{% endblock %}
+{% import "::macros-stats.twig" as macros %}
 
 {% block content %}
     {{ parent() }}
@@ -31,7 +30,12 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
                 <div class="pull-right" title="Se déconnecter de l'interface d'administration"><a href="{{ path('admin_logout') }}"><i class="icon-eye-close"></i> se déconnecter</a></div>
             </h4>
 
-            <table class="table table-condensed table-striped table-hover">
+            <p>
+                <small>Garder la barre de défilement bloquée en haut
+                pour un rafraîchissement automatique toutes les 10 secondes.</small>
+            </p>
+
+            <table id="sessions" class="table table-condensed table-striped table-hover">
                 <thead>
                     <tr>
                         <th></th>
@@ -45,56 +49,14 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
                     </tr>
                 </thead>
                 <tbody>
-                    {% set i = 0 %}
-                    {% for key, session in sessions %}
-                        {% set i = i+1 %}
-                        <tr>
-                            <td><a href="/admin/sessions/{{ key }}" title="Voir les résultats détaillés"><i class="icon-zoom-in"></i></a></td>
-                            <td title="{{ session.filename }}">{{ i }}</td>
-
-                            {% set title = session.ip is defined and session.ip is not empty ? session.ip : '' %}
-                            {% set title = title is not empty and session.host_name is defined and title != session.host_name ? title ~ ', ' ~ session.host_name : title %}
-                            <td title="{{ title }}">{{ session.candidate }}</td>
-
-                            <td>{{ session.quiz_stats.title }}</td>
-
-                            {% if session.state == 'quiz-in-progress' %}
-                                {% if date(session.timelimit) < date() %}
-                                    {% set status_msg = 'évaporé, ' ~ session.result.total.total_nb_questions ~ '/' ~ session.quiz_stats.nb_questions ~ ' ?' %}
-                                    <td class="text-warning"><i class="icon-time"></i> {{ status_msg }}</td>
-                                {% else %}
-                                    {% set status_msg = 'en cours, ' ~ session.result.total.total_nb_questions ~ '/' ~ session.quiz_stats.nb_questions %}
-                                    <td class="text-info"><i class="icon-refresh"></i> {{ status_msg }}</td>
-                                {% endif %}
-                            {% else %}
-                                {% set status_msg = 'terminé' %}
-                                <td><i class="icon-ok"></i> {{ status_msg }}</td>
-                            {% endif %}
-
-                            <td>{{ session.timelimit|date('Y-m-d H:i:s', 'Europe/Paris') }}</td>
-
-                            {% if session.result.total.total_nb_questions == 0 %}
-                                <td class="text-info" title="encore aucune question répondue">NA</td>
-                            {% else %}
-                                {% set score = session.result.total.score|score_format(1) ~ ' points sur ' ~ session.result.total.total_nb_questions %}
-                                {% set score100 = (session.result.total.score*100/session.result.total.total_nb_questions)|number_format %}
-                                {% if session.state == 'quiz-in-progress' %}
-                                    <td class="text-info" title="{{ score }}, score provisoire ne tenant compte que des questions affichées">{{ score100 }}</td>
-                                {% else %}
-                                    <td title="{{ score }}">{{ score100 }}</td>
-                                {% endif %}
-                            {% endif %}
-
-                            <td>
-                                <form action="/admin/sessions/{{ key }}" method="post" class="sessions">
-                                    <input type="hidden" id="_method" name="_method" value="DELETE" />
-                                    <input type="submit" class="icon-trash" value="" title="Supprimer définitivement cette session" />
-                                </form>
-                            </td>
-                        </tr>
-                    {% endfor %}
+                    {{ macros.sessions_rows(sessions, 1) }}
                 </tbody>
             </table>
+
+            <p id="listed_sessions">
+                <span id="nb_listed_sessions">{{ nb_listed_sessions }}</span> sessions listées
+                sur un total de <span id="">{{ total_nb_sessions }}</span>.
+            </p>
         </div>
     </div>
 {% endblock %}
@@ -103,7 +65,42 @@ along with Hi-Media Quizzes. If not, see <http://www.gnu.org/licenses/>.
     {{ parent() }}
     <script>
         $(document).ready(function(){
-            $("[rel=tooltip]").tooltip({placement: 'bottom'});
+            setTimeout('reload()', 10000);
+
+            var nb_listed_sessions = $('#sessions tbody tr').length;
+            var total_nb_sessions = {{total_nb_sessions}};
+            var load = false;
+            var offset = $('#sessions tbody tr:last').offset();
+
+            $(window).scroll(function(){
+                if (
+                    (offset.top-$(window).height() <= $(window).scrollTop())
+                    && (nb_listed_sessions < total_nb_sessions)
+                    && load==false
+                ) {
+                    load = true;
+                    $.ajax({
+                        url: './sessions/offset/' + nb_listed_sessions,
+                        type: 'get',
+
+                        success: function(data) {
+                            load = false;
+                            $('#sessions > tbody:last').append(data);
+                            nb_listed_sessions = $('#sessions tbody tr').length;
+                            $('#nb_listed_sessions').html(nb_listed_sessions);
+                            offset = $('#sessions tbody tr:last').offset();
+                        }
+                    });
+                }
+            });
         });
+
+        function reload () {
+            if ($(window).scrollTop() == 0) {
+                window.location.reload();
+            } else {
+                setTimeout('reload()', 10000);
+            }
+        }
     </script>
 {% endblock %}

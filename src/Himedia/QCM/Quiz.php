@@ -25,9 +25,11 @@ use Symfony\Component\Finder\Finder;
  * Un quiz, avec ses questions.
  *
  * Copyright (c) 2013 Hi-Media
+ * Copyright (c) 2013 Geoffroy Aubry <gaubry@hi-media.com>
  * Licensed under the GNU General Public License v3 (LGPL version 3).
  *
  * @copyright 2013 Hi-Media
+ * @copyright 2013 Geoffroy Aubry <gaubry@hi-media.com>
  * @license http://www.gnu.org/licenses/gpl.html
  */
 class Quiz implements \Serializable
@@ -101,7 +103,8 @@ class Quiz implements \Serializable
             'title' => '?',
             'time_limit' => 0,
             'max_nb_questions' => 0,
-            'questions_pool_size' => 0
+            'questions_pool_size' => 0,
+            'status' => 'available'
         );
         $this->aData['meta'] = array_merge($aDefaultMeta, $this->aData['meta']);
         if (empty($this->aData['questions'])) {
@@ -112,7 +115,8 @@ class Quiz implements \Serializable
             'title' => $this->aData['meta']['title'],
             'questions_pool_size' => $this->aData['meta']['questions_pool_size'],
             'time_limit' => $this->aData['meta']['time_limit'],
-            'time_limit_msg' => Tools::getRemainingTimeMsg($this->aData['meta']['time_limit'])
+            'time_limit_msg' => Tools::getRemainingTimeMsg($this->aData['meta']['time_limit']),
+            'status' => $this->aData['meta']['status']
         );
 
         if ($this->aData['meta']['max_nb_questions'] <= 0) {
